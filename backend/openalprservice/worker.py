@@ -25,10 +25,10 @@ class Worker(object):
         self.processing_key = None
 
     def config(self, redis_conf, openalpr_conf):
-    # redis_host, redis_port, queue_key, processing_key, openalpr_config):
         self.redis_client   = redis.StrictRedis(host=redis_conf['host'], port=redis_conf['port'], db=0)
         self.queue_key      = redis_conf['queue_key']
         self.processing_key = redis_conf['processing_key'] + ':' + random_hash()
+        self.results_key    = redis_conf['results_key']
 
         self.alpr           = UnloadableALPR(openalpr_conf['country'], openalpr_conf['config_file'], openalpr_conf['runtime_dir'])
         self.alpr.set_top_n(5)
@@ -50,31 +50,18 @@ class Worker(object):
         image_bytes = payload['image']
         results = self.alpr.recognize_array(image_bytes)
 
-        debug_print_results(results)
+        self.redis_client.lpop(self.processing_key)
 
-        self.redis_client.rpop(self.processing_key)
+        if results['results']:
+            self.process_result(payload, results['results'])
+
+    def process_result(self, payload, result):
+        payload['openalpr_results'] = result
+        pickled_payload = pickle.dumps(payload)
+
+        self.redis_client.lpush(self.results_key, pickled_payload)
 
 
 
 def random_hash():
     return binascii.b2a_hex(os.urandom(3))
-
-def debug_print_results(results):
-        # Uncomment to see the full results structure
-        # import pprint
-        # pprint.pprint(results)
-
-        print("Image size: %dx%d" %(results['img_width'], results['img_height']))
-        print("Processing Time: %f" % results['processing_time_ms'])
-
-        i = 0
-        for plate in results['results']:
-            i += 1
-            print("Plate #%d" % i)
-            print("   %12s %12s" % ("Plate", "Confidence"))
-            for candidate in plate['candidates']:
-                prefix = "-"
-                if candidate['matches_template']:
-                    prefix = "*"
-
-                print("  %s %12s%12f" % (prefix, candidate['plate'], candidate['confidence']))

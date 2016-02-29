@@ -36,8 +36,10 @@ REDIS_CONN = {
 }
 
 REDIS_MQ = {
-    'openalpr_queue':       'openalpr:queue',
-    'openalpr_processing':  'openalpr:processing'
+    'openalpr_queue':           'openalpr:queue',
+    'openalpr_processing':      'openalpr:processing',
+    'parkinglog_queue':         'parkinglog:queue',
+    'parkinglog_processing':    'parkinglog:processing'
 }
 
 OPENALPR = {
