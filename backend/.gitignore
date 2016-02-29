@@ -60,3 +60,4 @@ target/
 # Application
 *.db
 secrets.py
+imgstore/*

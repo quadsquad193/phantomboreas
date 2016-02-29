@@ -27,3 +27,5 @@ CSRF_SESSION_KEY = secrets.CSRF_SESSION_KEY
 
 # Secret key for signing cookies
 SECRET_KEY = secrets.SECRET_KEY
+
+IMAGE_STORE_PATH = os.path.join(BASE_DIR, 'imgstore')
