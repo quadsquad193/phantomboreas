@@ -1,27 +1,35 @@
-from droneservice import app
+from flask import request
+from droneservice import app, redis_client
 import os
-import datetime
 import binascii
+import pickle
 
 
 
-IMAGE_STORE_PATH = app.config['IMAGE_STORE_PATH']
+IMAGE_STORE_PATH    = app.config['IMAGE_STORE_PATH']
+OPENALPR_QUEUE_KEY  = app.config['REDIS_MQ']['openalpr_queue']
 
 
 
 def process(request):
-    f           = request.files['image']
-    timestamp   = datetime.datetime.utcnow().strftime("%s")
-    # timestamp   = request.form['timestamp']
-    # latitude    = request.form['latitude']
-    # longitude   = request.form['longitude']
+    f                   = request.files['image']
+    timestamp           = int(request.form['timestamp'])
+    latitude            = float(request.form['latitude'])
+    longitude           = float(request.form['longitude'])
 
     image_ext   = f.filename.rsplit('.', 1)[1]
-    filename    = timestamp + '-' + random_hash() + '.' + image_ext
+    filename    = str(timestamp) + '-' + random_hash() + '.' + image_ext
 
-    f.save(os.path.join(IMAGE_STORE_PATH, filename))
+    payload = {
+        'filename':         filename,
+        'latitude':         latitude,
+        'longitude':        longitude,
+        'timestamp':        timestamp,
+        'image':            f.stream.read()
+    }
 
-    # TODO: enqueue onto MQ service
+    redis_client.lpush(OPENALPR_QUEUE_KEY, pickle.dumps(payload))
+    f.close()
 
 def random_hash():
     return binascii.b2a_hex(os.urandom(3))

@@ -29,3 +29,13 @@ CSRF_SESSION_KEY = secrets.CSRF_SESSION_KEY
 SECRET_KEY = secrets.SECRET_KEY
 
 IMAGE_STORE_PATH = os.path.join(BASE_DIR, 'imgstore')
+
+REDIS_CONN = {
+    'host': 'localhost',
+    'port': 6379
+}
+
+REDIS_MQ = {
+    'openalpr_queue':       'openalpr:queue',
+    'openalpr_processing':  'openalpr:processing'
+}

@@ -2,7 +2,7 @@
 
 Setting up OpenALPR and its Python bindings on *Ubuntu 14.04 LTS*
 
-### Note
+### Notes
 
 We recommend building OpenALPR from source instead of installing it from Aptitude. The Python bindings from the most current repository may not be compatible with older releases.
 
