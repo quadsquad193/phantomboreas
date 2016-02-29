@@ -39,3 +39,10 @@ REDIS_MQ = {
     'openalpr_queue':       'openalpr:queue',
     'openalpr_processing':  'openalpr:processing'
 }
+
+OPENALPR = {
+    'country': 'us',
+    'region': 'ca',
+    'config_file': '/etc/openalpr/openalpr.conf',
+    'runtime_dir': '/usr/share/openalpr/runtime_data'
+}
