@@ -1,4 +1,6 @@
-__all__ = ['worker']
+__all__ = ['worker', 'logger']
 
 from parkinglogservice.worker import Worker
-worker = Worker()
+from parkinglogservice.logger import Logger
+logger = Logger()
+worker = Worker(logger)

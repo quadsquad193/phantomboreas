@@ -6,11 +6,13 @@ import binascii
 
 
 class Worker(object):
-    def __init__(self):
+    def __init__(self, logger):
         self.configured     = False
         self.redis_client   = None
         self.queue_key      = None
         self.processing_key = None
+
+        self.logger = logger
 
     def config(self, redis_conf):
         self.redis_client   = redis.StrictRedis(host=redis_conf['host'], port=redis_conf['port'], db=0)
@@ -19,8 +21,13 @@ class Worker(object):
 
         self.configured = True
 
-    def run(self):
+    def assert_config(self):
         if not self.configured: raise RuntimeError("Worker not yet configured with config() method.")
+
+        self.logger.assert_config()
+
+    def run(self):
+        self.assert_config()
 
         while(True):
             self.process_alpr()
@@ -29,9 +36,12 @@ class Worker(object):
         pickled_payload = self.redis_client.brpoplpush(self.queue_key, self.processing_key)
         payload = pickle.loads(pickled_payload)
 
-        # TODO: do stuff with the OpenALPR results
+        # Assign a random hash to uniquely identify a set of one or more
+        # recognized plates
+        payload['process_hash'] = random_hash()
 
-        debug_print_results(payload['openalpr_results'])
+        # Give to Logger instance to handle
+        self.logger.process(payload)
 
         self.redis_client.lpop(self.processing_key)
 
@@ -39,20 +49,3 @@ class Worker(object):
 
 def random_hash():
     return binascii.b2a_hex(os.urandom(3))
-
-def debug_print_results(results):
-        # Uncomment to see the full results structure
-        # import pprint
-        # pprint.pprint(results)
-
-        i = 0
-        for plate in results:
-            i += 1
-            print("Plate #%d" % i)
-            print("   %12s %12s" % ("Plate", "Confidence"))
-            for candidate in plate['candidates']:
-                prefix = "-"
-                if candidate['matches_template']:
-                    prefix = "*"
-
-                print("  %s %12s%12f" % (prefix, candidate['plate'], candidate['confidence']))

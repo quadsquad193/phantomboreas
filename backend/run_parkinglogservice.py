@@ -10,5 +10,10 @@ redis_conf = {
     'processing_key':   config.REDIS_MQ['parkinglog_processing']
 }
 
+db_conf = {
+
+}
+
+parkinglogservice.logger.config(db_conf)
 parkinglogservice.worker.config(redis_conf)
 parkinglogservice.worker.run()
