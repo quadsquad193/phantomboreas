@@ -59,5 +59,6 @@ target/
 
 # Application
 *.db
+*.rdb
 secrets.py
 imgstore/*
