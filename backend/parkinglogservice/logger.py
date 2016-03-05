@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from parkinglogservice.db.models import Base, LicensePlateLog
+from parkinglogservice.db.models import Base, CandidateLog, CaptureLog
 from parkinglogservice import utils
 
-
+import datetime
 
 class Logger(object):
     def __init__(self):
@@ -32,7 +32,17 @@ class Logger(object):
         # create new DB session to handle any transactions
         session = self.db_session()
 
-        log = LicensePlateLog(id='test')
+        capture_log = CaptureLog(
+            filename=payload['filename'], latitude=payload['latitude'], longitude=payload['longitude'],
+            timestamp=datetime.date.fromtimestamp(payload['timestamp']), image=payload['image']
+        )
 
-        session.add(log)
+        # Build new candidates
+        for result in payload['openalpr_results']:
+            for candidate in result['candidates']:
+                capture_log.candidates.append(
+                    CandidateLog(license_plate=candidate['plate'], confidence=candidate['confidence'])
+                )
+
+        session.add(capture_log)
         session.commit()
