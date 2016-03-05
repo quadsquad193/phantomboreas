@@ -1,5 +1,6 @@
-all = ['Base', 'CandidateLog', 'CaptureLog']
+all = ['Base', 'CaptureLog', 'PlateLog', 'CandidateLog']
 
 from base import Base
-from candidatelog import CandidateLog
 from capturelog import CaptureLog
+from platelog import PlateLog
+from candidatelog import CandidateLog
