@@ -11,7 +11,7 @@ redis_conf = {
 }
 
 db_conf = {
-
+    'sqlite_url':   config.SQLALCHEMY_DATABASE_URI
 }
 
 parkinglogservice.logger.config(db_conf)
