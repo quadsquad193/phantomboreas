@@ -55,12 +55,12 @@ class TestWorker:
         assert redisdb.echo('Hello, World!') == 'Hello, World!'
 
     # Ensure basic functionality of the worker process
-    def test_process_image_and_result(self, redisdb):
+    def test_process_image_and_result(self, monkeypatch, redisdb):
         worker = Worker()
         worker.config(redis_conf, openalpr_conf)
 
         # Stub the worker's Redis client
-        worker.redis_client = redisdb
+        monkeypatch.setattr(worker, 'redis_client', redisdb)
 
         pickled_payload = pickle.dumps({
             'filename':         'test.jpg',

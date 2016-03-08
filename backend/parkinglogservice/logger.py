@@ -2,8 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
 
-from parkinglogservice.db.models import Base, CaptureLog, PlateLog, CandidateLog
-from parkinglogservice import utils
+from db.models import Base, CaptureLog, PlateLog, CandidateLog
 
 
 
@@ -34,7 +33,7 @@ class Logger(object):
             filename=payload['filename'],
             latitude=payload['latitude'],
             longitude=payload['longitude'],
-            timestamp=datetime.date.fromtimestamp(payload['timestamp'])
+            timestamp=datetime.datetime.fromtimestamp(payload['timestamp'])
         )
 
         # ... each CaptureLog has possibly many PlateLogs

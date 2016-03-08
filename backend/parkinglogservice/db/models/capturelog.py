@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, LargeBinary, String, Float, Date
+from sqlalchemy import Column, Integer, LargeBinary, String, Float, DateTime
 from sqlalchemy.orm import relationship
 
 from base import Base
@@ -14,6 +14,6 @@ class CaptureLog(Base):
     filename        = Column(String)
     latitude        = Column(Float)
     longitude       = Column(Float)
-    timestamp       = Column(Date)
+    timestamp       = Column(DateTime)
 
     plates = relationship("PlateLog", back_populates="capture")
