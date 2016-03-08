@@ -9,6 +9,7 @@ import config
 from openalprservice.worker import Worker, UnloadableALPR
 
 
+
 redis_conf = {
     'host':             config.REDIS_CONN['host'],
     'port':             config.REDIS_CONN['port'],
