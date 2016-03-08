@@ -1,6 +1,6 @@
 # Setup
 
-Setting up OpenALPR and its Python bindings on *Ubuntu 14.04 LTS*
+## Setting up OpenALPR and its Python bindings on *Ubuntu 14.04 LTS*
 
 ### Notes
 

@@ -1,6 +1,6 @@
 # Setup
 
-Setting up Redis and a Python client.
+## Setting up Redis and a Python client.
 
 ### Notes
 
@@ -24,7 +24,7 @@ sudo make install
 
 ### Set up Python client
 
-Services that rely on Redis should already have the `python-redis` project specified as a dependency (e.g; `requirements.txt`).
+Services that rely on Redis should already have the `python-redis` project specified as a dependency (e.g; `requirements.txt`). For whatever reason, you may choose to use the `redis-py` client.
 
 ```
 sudo pip install redis

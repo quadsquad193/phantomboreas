@@ -1,22 +1,20 @@
-# Setup
-
-Running tests
+# Running the Test Suite
 
 ### How to
 
-Within your `virtualenv`, use `pip` to install the project and its packages in editable mode. See `setup.py` for details about which "packages" are exposed.
+You can use `pip` to install the project and its packages in editable mode within your `virtualenv` during development.
+
+> If `phantomboreas` is installed as a `site-package` and you wish to test against that, you don't need to do the below.
 
 ```
 pip install -e .
 ```
 
-Then, you may use `pytest` to run each services' (or packages') test suite. For example...
+Then use `pytest` to run the test suite, located the `spec` directory.
 
 ```
-py.test openalprservice
+py.test spec/
 ```
-
-Some tests require the use of Redis. Be sure to have a server running!
 
 ### Notes
 
