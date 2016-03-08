@@ -25,7 +25,7 @@ class Worker(object):
         self.processing_key = None
 
     def config(self, redis_conf, openalpr_conf):
-        self.redis_client   = redis.StrictRedis(host=redis_conf['host'], port=redis_conf['port'], db=0)
+        self.redis_client   = redis.StrictRedis(host=redis_conf['host'], port=redis_conf['port'], db=redis_conf['db_index'])
         self.queue_key      = redis_conf['queue_key']
         self.processing_key = redis_conf['processing_key'] + ':' + random_hash()
         self.results_key    = redis_conf['results_key']

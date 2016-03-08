@@ -32,7 +32,8 @@ IMAGE_STORE_PATH = os.path.join(BASE_DIR, 'imgstore')
 
 REDIS_CONN = {
     'host': 'localhost',
-    'port': 6379
+    'port': 6379,
+    'db_index': 0
 }
 
 REDIS_MQ = {
