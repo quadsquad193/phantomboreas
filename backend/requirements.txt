@@ -1,0 +1,6 @@
+pytest
+pytest-runner
+pytest-dbfixtures
+flask
+flask-sqlalchemy
+redis
