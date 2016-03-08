@@ -37,6 +37,8 @@ sudo make install
 ```
 cd ../bindings/python
 source make.sh
+# and/or
+sudo pip install .
 ```
 
 You can then run `python test.py <image>` to verify the installation.
