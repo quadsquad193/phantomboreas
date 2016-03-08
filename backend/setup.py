@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='phantom-boreas',
-    version='0.0.0',
+    version='0.1.0',
     description='Backend services for the Quadcopter project',
     url='https://github.com/quadsquad193/Quadcopter',
 
