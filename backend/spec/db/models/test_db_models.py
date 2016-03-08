@@ -2,7 +2,7 @@ import pytest
 
 import sqlalchemy
 
-from db.models import Base
+from phantomboreas.db.models import Base
 
 
 

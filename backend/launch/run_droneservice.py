@@ -1,4 +1,4 @@
-import droneservice
+from phantomboreas import droneservice
 
 
 

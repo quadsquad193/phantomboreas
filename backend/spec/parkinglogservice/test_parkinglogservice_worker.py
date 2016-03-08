@@ -3,26 +3,25 @@ from pytest_dbfixtures import factories
 
 import pickle
 
-import config
-from parkinglogservice.worker import Worker
-from parkinglogservice.logger import Logger
+from phantomboreas.parkinglogservice.worker import Worker
+from phantomboreas.parkinglogservice.logger import Logger
 
 
 
 redis_conf = {
-    'host':             config.REDIS_CONN['host'],
-    'port':             config.REDIS_CONN['port'],
+    'host':             'localhost',
+    'port':             '?',
     'db_index':         1,
-    'queue_key':        config.REDIS_MQ['parkinglog_queue'],
-    'processing_key':   config.REDIS_MQ['parkinglog_processing'],
+    'queue_key':        'test:parkinglog:queue',
+    'processing_key':   'test:parkinglog:processing'
 }
 
-redis_proc = factories.redis_proc()
+redis_proc = factories.redis_proc(host=redis_conf['host'], port=redis_conf['port'])
 redisdb = factories.redisdb('redis_proc', db=1)
 
 
 
-class TestWorker:
+class TestParkingLogServiceWorker:
     # Unconfigured workers should raise an exception when called to run
     def test_unconfigured_worker(self):
         worker = Worker(Logger())

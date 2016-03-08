@@ -1,7 +1,7 @@
 from flask import request
 from flask.views import MethodView
 
-from droneservice import process
+from phantomboreas.droneservice import process
 
 
 

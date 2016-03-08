@@ -4,8 +4,8 @@ import sqlalchemy
 import datetime
 import os
 
-from parkinglogservice.logger import Logger
-from db.models import Base, CaptureLog, PlateLog, CandidateLog
+from phantomboreas.parkinglogservice.logger import Logger
+from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog
 
 
 
@@ -70,7 +70,7 @@ payload = {
 
 
 
-class TestLogger:
+class TestParkingLogServiceLogger:
     # Unconfigured loggers should raise an exception when assert_config() is
     # called
     def test_unconfigured_logger(self):

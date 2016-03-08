@@ -5,28 +5,27 @@ import pickle
 import os
 import openalpr
 
-import config
-from openalprservice.worker import Worker, UnloadableALPR
+from phantomboreas.openalprservice.worker import Worker, UnloadableALPR
 
 
 
 redis_conf = {
-    'host':             config.REDIS_CONN['host'],
-    'port':             config.REDIS_CONN['port'],
+    'host':             'localhost',
+    'port':             '?',
     'db_index':         1,
-    'queue_key':        config.REDIS_MQ['openalpr_queue'],
-    'processing_key':   config.REDIS_MQ['openalpr_processing'],
-    'results_key':      config.REDIS_MQ['parkinglog_queue']
+    'queue_key':        'test:openalpr:queue',
+    'processing_key':   'test:openalpr:processing',
+    'results_key':      'test:parkinglog:queue'
 }
 
 openalpr_conf = {
-    'country':      config.OPENALPR['country'],
-    'region':       config.OPENALPR['region'],
-    'config_file':  config.OPENALPR['config_file'],
-    'runtime_dir':  config.OPENALPR['runtime_dir']
+    'country': 'us',
+    'region': 'ca',
+    'config_file': '/etc/openalpr/openalpr.conf',
+    'runtime_dir': '/usr/share/openalpr/runtime_data'
 }
 
-redis_proc = factories.redis_proc()
+redis_proc = factories.redis_proc(host=redis_conf['host'], port=redis_conf['port'])
 redisdb = factories.redisdb('redis_proc', db=1)
 
 image = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test.jpg'))
@@ -35,7 +34,7 @@ image.close()
 
 
 
-class TestWorker:
+class TestOpenALPRServiceWorker:
     # The UnloadableALPR class should be a proxy container for openalpr.Alpr
     # instances
     def test_UnloadableALPR_is_subclass(self):

@@ -1,4 +1,5 @@
-import parkinglogservice
+from phantomboreas import parkinglogservice
+
 import config
 
 

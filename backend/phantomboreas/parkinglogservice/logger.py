@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
 
-from db.models import Base, CaptureLog, PlateLog, CandidateLog
+from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog
 
 
 

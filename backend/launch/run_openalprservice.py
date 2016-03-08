@@ -1,4 +1,5 @@
-import openalprservice
+from phantomboreas import openalprservice
+
 import config
 
 

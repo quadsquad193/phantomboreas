@@ -1,8 +1,9 @@
 from flask import request
-from droneservice import app, redis_client
 import os
 import binascii
 import pickle
+
+from phantomboreas.droneservice import app, redis_client
 
 
 
