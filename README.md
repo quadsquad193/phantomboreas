@@ -1,8 +1,14 @@
 Object Recognition with Quadcopter
 ==================================
 
-Authors: Alexander Sergian, Baotuan Nguyen, Kelvin Lu, Mark Machado
+UC Davis Senior Design Project, Winter/Spring 2016
+
+Alexander Sergian, Baotuan Nguyen, Kelvin Lu, Mark Machado
 
 -----
 
+### Links
+
 [Development Blog](https://quadcopterucd.wordpress.com)
+
+[Milestones](https://github.com/quadsquad193/Quadcopter/milestones)
