@@ -14,9 +14,9 @@ OPENALPR_QUEUE_KEY  = app.config['REDIS_MQ']['openalpr_queue']
 
 def process(request):
     f                   = request.files['image']
-    timestamp           = int(request.form['timestamp'])
-    latitude            = float(request.form['latitude'])
-    longitude           = float(request.form['longitude'])
+    timestamp           = request.form.get('timestamp', type=int)
+    latitude            = request.form.get('latitude',  type=float)
+    longitude           = request.form.get('longitude', type=float)
 
     image_ext   = f.filename.rsplit('.', 1)[1]
     filename    = str(timestamp) + '-' + random_hash() + '.' + image_ext
