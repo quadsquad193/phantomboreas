@@ -1,17 +1,15 @@
 from flask import request
 from flask.views import MethodView
 from flask import render_template
-
-from base64 import b64encode
-
-import process
-from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog
-
 # import sqlalchemy as sa
 # from sqlalchemy import orm
 # from sqlalchemy import create_engine
+from base64 import b64encode
 
+from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog
 from phantomboreas.webservice import db_session
+import process
+
 
 
 class IndexView(MethodView):

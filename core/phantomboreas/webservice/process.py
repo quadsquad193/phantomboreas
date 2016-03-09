@@ -1,5 +1,4 @@
 from flask import request
-
 import os
 import binascii
 import pickle
