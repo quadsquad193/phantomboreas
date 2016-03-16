@@ -2,6 +2,7 @@ package com.shronas.parkingpatrol;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import dji.sdk.Camera.DJICamera;
@@ -117,6 +118,7 @@ public class Camera {
             // handler自带方法实现定时器
             try {
                 handlerTimer.postDelayed(this, TIME);
+                TextView viewTimer = (TextView) mActivity.findViewById(R.id.timer);
                 viewTimer.setText(Integer.toString(i++));
             } catch (Exception e) {
                 e.printStackTrace();
