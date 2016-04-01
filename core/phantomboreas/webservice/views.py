@@ -20,6 +20,19 @@ class IndexView(MethodView):
     	capture_list = []
 
     	for capture in _capture_list:
-    		capture_list.append({'filename': capture.filename, 'image': b64encode(capture.image)})
+    		#Get necessary capture info and put it in json format
+    		c = {'filename': capture.filename, 'image': b64encode(capture.image), 'plates': []}
+
+    		#Add necessary information about plates and candidates
+    		for plate in capture.plates:
+    			p = {'id': plate.id, 'candidates': []}
+
+    			for candidate in plate.candidates:
+    				p['candidates'].append({'license_plate': candidate.license_plate, 'confidence': candidate.confidence})
+
+    			c['plates'].append(p)
+
+    		capture_list.append(c)
 
         return render_template('index.html', capture_list=capture_list), 200
+
