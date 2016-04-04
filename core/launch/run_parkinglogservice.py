@@ -17,6 +17,10 @@ db_conf = {
     'db_url':   config.SQLALCHEMY_DATABASE_URI
 }
 
-parkinglogservice.logger.config(db_conf)
+assets_conf = {
+    'image_store_path':    config.IMAGE_STORE_PATH
+}
+
+parkinglogservice.logger.config(db_conf, assets_conf)
 parkinglogservice.worker.config(redis_conf)
 parkinglogservice.worker.run()

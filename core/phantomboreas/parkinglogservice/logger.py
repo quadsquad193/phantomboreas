@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
+from werkzeug.utils import secure_filename
+import os
 
 from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog
 
@@ -13,23 +15,40 @@ class Logger(object):
 
         self.db_session = sessionmaker()
 
-    def config(self, db_conf):
+    def config(self, db_conf, assets_conf):
         self.db_engine = create_engine(db_conf['db_url'])
 
         self.db_session.configure(bind=self.db_engine)
         Base.metadata.create_all(self.db_engine)
+
+        self.image_store_path = assets_conf['image_store_path']
 
         self.configured = True
 
     def assert_config(self):
         if not self.configured: raise RuntimeError("Logger not yet configured with config() method.")
 
+    def save_on_disk(self, filename, image):
+        if ('.' not in filename) or (filename.rsplit('.', 1)[1] not in ['jpg', 'jpeg', 'png']):
+            return None
+
+        filepath = os.path.join(self.image_store_path, secure_filename(filename))
+
+        fd = open(filepath, 'w')
+        fd.write(image)
+        fd.close()
+
+        return filepath
+
     def process(self, payload):
+        # save image on disk
+        filepath = self.save_on_disk(payload['filename'], payload['image'])
+
         # create new DB session to handle any transactions
         session = self.db_session()
 
         capture_log = CaptureLog(
-            image=payload['image'],
+            filepath=filepath,
             filename=payload['filename'],
             latitude=payload['latitude'],
             longitude=payload['longitude'],

@@ -11,7 +11,7 @@ class CaptureLog(Base):
 
     id = Column(Integer, primary_key=True)
 
-    image           = Column(MEDIUMBLOB)
+    filepath        = Column(String)
     filename        = Column(String(256))
     latitude        = Column(Float)
     longitude       = Column(Float)
