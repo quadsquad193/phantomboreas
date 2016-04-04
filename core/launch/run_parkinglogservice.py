@@ -1,5 +1,6 @@
 from phantomboreas import parkinglogservice
 
+import sqlalchemy
 import config
 
 
@@ -13,7 +14,7 @@ redis_conf = {
 }
 
 db_conf = {
-    'sqlite_url':   config.SQLALCHEMY_DATABASE_URI
+    'db_url':   config.SQLALCHEMY_DATABASE_URI
 }
 
 parkinglogservice.logger.config(db_conf)

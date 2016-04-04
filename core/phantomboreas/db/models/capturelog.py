@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, LargeBinary, String, Float, DateTime
+from sqlalchemy.dialects.mysql import MEDIUMBLOB
 from sqlalchemy.orm import relationship
 
 from base import Base
@@ -10,8 +11,8 @@ class CaptureLog(Base):
 
     id = Column(Integer, primary_key=True)
 
-    image           = Column(LargeBinary)
-    filename        = Column(String)
+    image           = Column(MEDIUMBLOB)
+    filename        = Column(String(256))
     latitude        = Column(Float)
     longitude       = Column(Float)
     timestamp       = Column(DateTime)
