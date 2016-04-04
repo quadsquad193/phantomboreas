@@ -10,7 +10,7 @@ class CaptureLog(Base):
 
     id = Column(Integer, primary_key=True)
 
-    image           = Column(LargeBinary)
+    filepath        = Column(String)
     filename        = Column(String)
     latitude        = Column(Float)
     longitude       = Column(Float)

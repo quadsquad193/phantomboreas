@@ -4,7 +4,6 @@ from flask import render_template
 # import sqlalchemy as sa
 # from sqlalchemy import orm
 # from sqlalchemy import create_engine
-from base64 import b64encode
 
 from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog
 from phantomboreas.webservice import db_session
@@ -21,7 +20,7 @@ class IndexView(MethodView):
 
     	for capture in _capture_list:
     		#Get necessary capture info and put it in json format
-    		c = {'filename': capture.filename, 'image': b64encode(capture.image), 'plates': []}
+    		c = {'filename': capture.filename, 'plates': []}
 
     		#Add necessary information about plates and candidates
     		for plate in capture.plates:
@@ -35,4 +34,3 @@ class IndexView(MethodView):
     		capture_list.append(c)
 
         return render_template('index.html', capture_list=capture_list), 200
-

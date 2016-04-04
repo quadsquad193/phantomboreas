@@ -48,7 +48,7 @@ class Logger(object):
         session = self.db_session()
 
         capture_log = CaptureLog(
-            image=payload['image'],
+            filepath=filepath,
             filename=payload['filename'],
             latitude=payload['latitude'],
             longitude=payload['longitude'],
