@@ -1,7 +1,7 @@
 pytest
 pytest-runner
 pytest-dbfixtures
-python-mysqldb
 flask
 flask-sqlalchemy
+MySQL-python
 redis
