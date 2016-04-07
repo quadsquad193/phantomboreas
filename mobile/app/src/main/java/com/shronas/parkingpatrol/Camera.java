@@ -2,7 +2,7 @@ package com.shronas.parkingpatrol;
 
 import android.app.Activity;
 import android.os.Handler;
-import android.widget.TextView;
+import android.util.Log;
 import android.widget.Toast;
 
 import dji.sdk.Camera.DJICamera;
@@ -35,11 +35,18 @@ public class Camera {
     protected void setupCamera() {
         setDownloadMode();
 
-        if (mMediaManager.isMediaManagerAvailable()) {
+        if (mCamera != null)
             mMediaManager = new MediaManager(mCamera.getMediaManager(), mActivity);
+        else
+            Log.d("setupCamera", "camera null");
+
+        if (mMediaManager.isMediaManagerAvailable()) {
             mMediaManager.fetchList();
         } else {
-            showToast("In Download: Media Download not available");
+            if(mActivity == null)
+                Log.d("In Download", "Media Download not available");
+            else
+                showToast("In Download: Media Download not available");
         }
     } // setupCamera()
 
@@ -67,15 +74,24 @@ public class Camera {
                         @Override
                         public void onResult(DJIError error) {
                             if (error == null) {
-                                showToast("take photo: success");
+                                if(mActivity == null)
+                                    Log.d("take photo", "success");
+                                else
+                                    showToast("take photo: success");
                                 setupCamera();
                             } else {
-                                showToast(error.getDescription());
+                                if(mActivity == null)
+                                    Log.d("photo shoot error", error.getDescription());
+                                else
+                                    showToast(error.getDescription());
                             }
                         }
                     }); // Execute the startShootPhoto API
                 } else {
-                    showToast(error.getDescription());
+                    if(mActivity == null)
+                        Log.d("set camera error", error.getDescription());
+                    else
+                        showToast(error.getDescription());
                 }
             }
         });
@@ -95,16 +111,25 @@ public class Camera {
                         @Override
                         public void onResult(DJIError error) {
                             if (error == null) {
-                                showToast("Record video: success");
+                                if(mActivity == null)
+                                    Log.d("Record Video", "success");
+                                else
+                                    showToast("Record video: success");
                                 //handlerTimer.postDelayed(runnable, TIME); // Start the timer for recording
                             } else {
-                                showToast(error.getDescription());
+                                if(mActivity == null)
+                                    Log.d("video record error", error.getDescription());
+                                else
+                                    showToast(error.getDescription());
                             }
                         }
 
                     }); // Execute the startShootPhoto API
                 } else {
-                    showToast(error.getDescription());
+                    if(mActivity == null)
+                        Log.d("set video record mode", error.getDescription());
+                    else
+                        showToast(error.getDescription());
                 }
             }
         });
@@ -118,8 +143,7 @@ public class Camera {
             // handler自带方法实现定时器
             try {
                 handlerTimer.postDelayed(this, TIME);
-                TextView viewTimer = (TextView) mActivity.findViewById(R.id.timer);
-                viewTimer.setText(Integer.toString(i++));
+                //viewTimer.setText(Integer.toString(i++));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -132,9 +156,15 @@ public class Camera {
             @Override
             public void onResult(DJIError error) {
                 if (error == null) {
-                    showToast("Stop recording: success");
+                    if(mActivity == null)
+                        Log.d("Stop recording", "success");
+                    else
+                        showToast("Stop recording: success");
                 } else {
-                    showToast(error.getDescription());
+                    if(mActivity == null)
+                        Log.d("stop recording error", error.getDescription());
+                    else
+                        showToast(error.getDescription());
                 }
                 handlerTimer.removeCallbacks(runnable); // Start the timer for recording
                 // i = 0; // Reset the timer for recording
@@ -145,10 +175,12 @@ public class Camera {
 
 
     public void showToast(final String msg) {
-        mActivity.runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (mActivity != null) {
+            mActivity.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(mActivity, msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } // if activity isn't null
     } // showToast()
 } // class Camera

@@ -1,7 +1,10 @@
 package com.shronas.parkingpatrol;
 
 import android.app.Activity;
+import android.util.Log;
 
+import dji.sdk.Camera.DJICamera;
+import dji.sdk.SDKManager.DJISDKManager;
 import dji.sdk.base.DJIBaseProduct;
 
 /**
@@ -10,13 +13,14 @@ import dji.sdk.base.DJIBaseProduct;
  */
 public class Product {
     private DJIBaseProduct mProduct = null;
-    private Camera mCamera;
+    private Camera mCamera = null;
     private Activity mActivity;
 
     Product(Activity mActivity) {
+        this.mActivity = mActivity;
+
         try {
-            mProduct = ParkingPatrolApplication.getProductInstance();
-            mCamera = new Camera(mProduct.getCamera(), mActivity);
+            updateProduct();
         } catch (Exception exception) {
             mProduct = null;
         } // try/catch
@@ -24,11 +28,22 @@ public class Product {
 
 
     DJIBaseProduct getProduct() {
+        updateProduct();
         return this.mProduct;
     } // getProduct()
 
 
+    void updateProduct() {
+        mProduct = ParkingPatrolApplication.getProductInstance();
+        if (mProduct != null)
+            mCamera = new Camera(mProduct.getCamera(), mActivity);
+        else
+            Log.d("updateProduct", "product not connected");
+    } // updateProduct()
+
+
     Camera getCamera() {
+        updateProduct();
         return this.mCamera;
     } // getCamera()
 

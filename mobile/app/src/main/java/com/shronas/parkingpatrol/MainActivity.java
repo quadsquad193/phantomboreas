@@ -5,16 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.graphics.SurfaceTexture;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.TextureView;
@@ -25,26 +20,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import dji.sdk.AirLink.DJILBAirLink.DJIOnReceivedVideoCallback;
 import dji.sdk.Camera.DJICamera;
 import dji.sdk.Camera.DJICamera.CameraReceivedVideoDataCallback;
-import dji.sdk.Camera.DJIMedia;
-import dji.sdk.Camera.DJIMediaManager;
 import dji.sdk.Codec.DJICodecManager;
 import dji.sdk.Products.DJIAircraft;
-import dji.sdk.base.DJIBaseComponent;
-import dji.sdk.base.DJIBaseComponent.DJICompletionCallback;
 import dji.sdk.base.DJIBaseProduct;
 import dji.sdk.base.DJIBaseProduct.Model;
-import dji.sdk.base.DJIError;
-import dji.sdk.Camera.DJICameraSettingsDef.CameraMode;
-import dji.sdk.Camera.DJICameraSettingsDef.CameraShootPhotoMode;
 
 public class MainActivity extends Activity implements SurfaceTextureListener,OnClickListener {
-    private DJIMediaManager mMediaManager;
     public Handler messageHandler;
 
     private static final String TAG = MainActivity.class.getName();
@@ -55,8 +39,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
     protected CameraReceivedVideoDataCallback mReceivedVideoDataCallBack = null;
     protected DJIOnReceivedVideoCallback mOnReceivedVideoCallback = null;
 
-    private DJIBaseProduct mProduct = null;
-    private DJICamera mCamera = null;
+    Product mProductEncapsulated;
+
     // Codec for video live view
     protected DJICodecManager mCodecManager = null;
 
@@ -65,8 +49,6 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
     protected TextureView mVideoSurface = null;
     private Button captureAction, recordAction, captureMode;
     private TextView viewTimer;
-    private int i = 0;
-    private int TIME = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +91,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         IntentFilter filter = new IntentFilter();
         filter.addAction(ParkingPatrolApplication.FLAG_CONNECTION_CHANGE);
         registerReceiver(mReceiver, filter);
+
+        mProductEncapsulated = new Product(this);
 
 /*
         String destDirectory = Environment.getExternalStorageDirectory().
@@ -200,41 +184,25 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
     }
 
-    private Handler handlerTimer = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            // handler自带方法实现定时器
-            try {
-
-                handlerTimer.postDelayed(this, TIME);
-                viewTimer.setText(Integer.toString(i++));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     private void initPreviewer() {
-        try {
-            mProduct = ParkingPatrolApplication.getProductInstance();
-        } catch (Exception exception) {
-            mProduct = null;
-        }
+        DJIBaseProduct mProduct = mProductEncapsulated.getProduct();
+        DJICamera mCamera = null;
+        if (mProduct != null)
+            mCamera = mProduct.getCamera();
 
-        if (null == mProduct || !mProduct.isConnected()) {
-            mCamera = null;
+/*
+        if () {
             showToast(getString(R.string.disconnected));
-        }
+        }*/
 
-        else {
+        if ((null != mProduct) && mProduct.isConnected()) {
             if (null != mVideoSurface) {
                 mVideoSurface.setSurfaceTextureListener(this);
             }
 
             if (!mProduct.getModel().equals(Model.UnknownAircraft)) {
-                mCamera = mProduct.getCamera();
+                //mCamera = mProductEncapsulated.getCamera();
                 if (mCamera != null) {
                     // Set the callback
                     mCamera.setDJICameraReceivedVideoDataCallback(mReceivedVideoDataCallBack);
@@ -253,17 +221,15 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         }
     }
 
-    private void uninitPreviewer() {
-        try {
-            mProduct = ParkingPatrolApplication.getProductInstance();
-        } catch (Exception exception) {
-            mProduct = null;
-        }
 
-        if (null == mProduct || !mProduct.isConnected()) {
-            mCamera = null;
+    private void uninitPreviewer() {
+        DJIBaseProduct mProduct = mProductEncapsulated.getProduct();
+        DJICamera mCamera;
+
+        /*if (null == mProduct || !mProduct.isConnected()) {
             showToast(getString(R.string.disconnected));
-        } else {
+        } else {*/
+        if ((null != mProduct) && mProduct.isConnected()) {
             if (!mProduct.getModel().equals(Model.UnknownAircraft)) {
                 mCamera = mProduct.getCamera();
                 if (mCamera != null) {
@@ -281,9 +247,10 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         }
     }
 
+
     //
     @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureAvailable(SurfaceTexture surface,int width, int height) {
         Log.e(TAG, "onSurfaceTextureAvailable");
         if (mCodecManager == null) {
             Log.e(TAG, "mCodecManager is null 2");
@@ -291,11 +258,13 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         }
     }
 
+
     //
     @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface,int width, int height){
         Log.e(TAG, "onSurfaceTextureSizeChanged");
     }
+
 
     //
     @Override
@@ -309,11 +278,13 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         return false;
     }
 
+
     //
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         Log.e(TAG, "onSurfaceTextureUpdated");
     }
+
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -330,8 +301,8 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         if (mConnectStatusTextView == null) return;
         boolean ret = false;
         DJIBaseProduct product = ParkingPatrolApplication.getProductInstance();
-        if (product != null) {
 
+        if (product != null) {
             if (product.isConnected()) {
                 //The product is connected
                 mConnectStatusTextView.setText(ParkingPatrolApplication.getProductInstance().getModel() + " Connected");
@@ -355,10 +326,20 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         }
     }
 
+
+    public void showToast(final String msg) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     protected void onProductChange() {
         initPreviewer();
-
     }
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -375,41 +356,23 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         return super.dispatchTouchEvent(ev);
     }
 
-    public void showToast(final String msg) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
 
     @Override
     public void onClick(View v) {
-
-        try {
-            mProduct = ParkingPatrolApplication.getProductInstance();
-        } catch (Exception exception) {
-            mProduct = null;
-        }
-
-        if (null == mProduct || !mProduct.isConnected()) {
-            mCamera = null;
-            showToast(getString(R.string.disconnected));
+        if (!mProductEncapsulated.isConnected())
             return;
-        }
 
         switch (v.getId()) {
             case R.id.button1: {
-                captureAction();
+                mProductEncapsulated.capturePhoto();
                 break;
             }
             case R.id.button2: {
-                recordAction();
+                mProductEncapsulated.record();
                 break;
             }
             case R.id.button3: {
-                stopRecord();
+                mProductEncapsulated.stopRecord();
                 break;
             }
             default:
@@ -417,276 +380,7 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         }
     }
 
-    // function for taking photo
-    private void captureAction() {
-
-        CameraMode cameraMode = CameraMode.ShootPhoto;
-
-        mCamera = mProduct.getCamera();
-
-        mCamera.setCameraMode(cameraMode, new DJICompletionCallback() {
-
-            @Override
-            public void onResult(DJIError error) {
-
-                if (error == null) {
-                    CameraShootPhotoMode photoMode = CameraShootPhotoMode.Single; // Set the camera capture mode as Single mode
-
-                    mCamera.startShootPhoto(photoMode, new DJICompletionCallback() {
-
-                        @Override
-                        public void onResult(DJIError error) {
-                            if (error == null) {
-                                showToast("take photo: success");
-                                downloadButton();
-                            } else {
-                                showToast(error.getDescription());
-                            }
-                        }
-
-                    }); // Execute the startShootPhoto API
-                } else {
-                    showToast(error.getDescription());
-                }
-
-            }
-
-        });
-
-    }
-
-    protected boolean isProductModuleAvailable() {
-        return (null != mProduct);
-    }
-
-    protected boolean isCameraModuleAvailable() {
-        return isProductModuleAvailable() &&
-                (null != mCamera);
-    }
-
-    protected boolean isMediaDownloadAvailable() {
-        return isCameraModuleAvailable() &&
-                (null != mCamera.getMediaManager());
-    }
-
-    /**
-     * Before the playback commands are sent to the aircraft, the camera work mode should be set
-     * to playback mode.
-     */
-    protected void setupCamera() {
-        if (isCameraModuleAvailable()) {
-            mCamera = mProduct.getCamera();
-
-            mCamera.setCameraMode(
-                    CameraMode.MediaDownload,
-                    new DJIBaseComponent.DJICompletionCallback() {
-                        @Override
-                        public void onResult(DJIError djiError) {
-
-                        }
-                    }
-            );
-            if (isMediaDownloadAvailable()) {
-                mMediaManager = mCamera.getMediaManager();
-
-                mMediaManager.setCameraModeMediaDownload(
-                        new DJIBaseComponent.DJICompletionCallback() {
-                            @Override
-                            public void onResult(DJIError error) {
-                                if (error == null) {
-                                    showToast("media manager set");
-                                } else {
-                                    showToast(error.getDescription());
-                                }
-                            }
-                        });
-            } else {
-                showToast("Media Download not available");
-            }
-        } else
-            showToast("Camera Not Available");
-    }
-
-    protected void downloadButton() {
-        // Download Button
-        setupCamera();
-
-        if (isMediaDownloadAvailable()) {
-            mMediaManager.fetchMediaList(
-                    new DJIMediaManager.CameraDownloadListener<ArrayList<DJIMedia>>() {
-
-                        @Override
-                        public void onFailure(DJIError error) {
-                            Message message = Message.obtain();
-                            message.obj = error.toString();
-                            messageHandler.sendMessage(message);
-                        } // onFailure()
-
-                        @Override
-                        public void onProgress(long total, long current) {
-                            Message message = Message.obtain();
-                            message.obj = "Progress: " + i;
-                            messageHandler.sendMessage(message);
-                        } // onProgress()
-
-                        @Override
-                        public void onRateUpdate(long total, long current, long persize) {
-                        } // onRateUpdate()
-
-                        @Override
-                        public void onStart() {
-                            Message message = Message.obtain();
-                            message.obj = "Start";
-                            messageHandler.sendMessage(message);
-                        } // onStart()
-
-                        @Override
-                        public void onSuccess(ArrayList<DJIMedia> data) {
-                            showToast("fetchMediaList success");
-                            downloadImage(data);
-                        } // onSuccess()
-                    }); // fetchMediaList()
-        } // isMediaDownloadAvailable()
-        else
-            showToast("in download: no download media availability");
-    }
-
-
-    protected void downloadImage(ArrayList<DJIMedia> data) {
-        int image_index = data.size() - 1;
-        DJIMedia image = data.get(image_index);
-        String filename = image.getFileName();
-
-        final String test_filename = filename;
-
-        // remove extension
-        int pos = filename.lastIndexOf(".");
-        if (pos > 0)
-            filename = filename.substring(0, pos);
-
-        File destDir = new File(Environment.getExternalStorageDirectory().
-                getAbsolutePath() + "/DJI_SPALSH/");
-
-        final File destDir2 = destDir;
-
-        image.fetchMediaData(destDir, filename,
-                new DJIMediaManager.CameraDownloadListener<String>() {
-
-                    @Override
-                    public void onFailure(DJIError error) {
-                        Message message = Message.obtain();
-                        message.obj = error.toString();
-                        messageHandler.sendMessage(message);
-                    } // onFailure()
-
-                    @Override
-                    public void onProgress(long total, long current) {
-                        Message message = Message.obtain();
-                        message.obj = "Progress: " + i;
-                        messageHandler.sendMessage(message);
-                    } // onProgress()
-
-                    @Override
-                    public void onRateUpdate(long total, long current, long persize) {
-                    } // onRateUpdate()
-
-                    @Override
-                    public void onStart() {
-                        Message message = Message.obtain();
-                        message.obj = "Start";
-                        messageHandler.sendMessage(message);
-                    } // onStart()
-
-                    @Override
-                    public void onSuccess(String data) {
-                        showToast("image download success");
-                        mMediaManager.exitMediaDownloading();
-
-                        String destDirectory = Environment.getExternalStorageDirectory().
-                                getAbsolutePath() + "/DJI_SPALSH/";
-                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + destDirectory)));
-
-                        postDownload(destDirectory + test_filename);
-                    } // onSuccess()
-                }); // fetchMediaList()
-    }
-
-
-
-    private void postDownload(String path) {
-        Activity mActivity = MainActivity.this;
-
-        final String filePath = path;
-        mActivity.runOnUiThread(new Runnable() {
-            public void run () {
-                showToast(filePath);
-                UploadAsyncTask server = new UploadAsyncTask(MainActivity.this);
-                server.execute(filePath);
-            }
-        });
-    } // postDownload()
-
-
-
-    // function for starting recording
-    private void recordAction(){
-        CameraMode cameraMode = CameraMode.RecordVideo;
-
-        mCamera = mProduct.getCamera();
-
-        mCamera.setCameraMode(cameraMode, new DJICompletionCallback() {
-
-            @Override
-            public void onResult(DJIError error) {
-
-                if (error == null) {
-
-
-                    mCamera.startRecordVideo(new DJICompletionCallback() {
-
-                        @Override
-                        public void onResult(DJIError error) {
-                            if (error == null) {
-                                showToast("Record video: success");
-                                handlerTimer.postDelayed(runnable, TIME); // Start the timer for recording
-                            } else {
-                                showToast(error.getDescription());
-                            }
-                        }
-
-                    }); // Execute the startShootPhoto API
-                } else {
-                    showToast(error.getDescription());
-                }
-
-            }
-
-        });
-
-    }
-
-    // function for stopping recording
-    private void stopRecord(){
-
-        mCamera = mProduct.getCamera();
-
-        mCamera.stopRecordVideo(new DJICompletionCallback() {
-
-            @Override
-            public void onResult(DJIError error) {
-                if (error == null) {
-                    showToast("Stop recording: success");
-                } else {
-                    showToast(error.getDescription());
-                }
-                handlerTimer.removeCallbacks(runnable); // Start the timer for recording
-                i = 0; // Reset the timer for recording
-            }
-
-        });
-    }
-
-
+/*
     public String getPath(Uri uri) {
         String[] projection = { MediaStore.MediaColumns.DATA };
         Cursor cursor = managedQuery(uri, projection, null, null, null);
@@ -696,14 +390,28 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         String imagePath = cursor.getString(column_index);
 
         return cursor.getString(column_index);
-    } // getPath()
+    } // getPath()*/
 
 
     /* Check if device is Android 6.0+ (request run-time permission check */
-    private boolean shouldAskPermission(){
+/*    private boolean shouldAskPermission(){
         return(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
-    } // shouldAskPermission()
+    } // shouldAskPermission()*/
 
+
+    /*private Handler handlerTimer = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            // handler自带方法实现定时器
+            try {
+                handlerTimer.postDelayed(this, TIME);
+                viewTimer.setText(Integer.toString(i++));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };*/
 
 
     class MessageHandler extends Handler {

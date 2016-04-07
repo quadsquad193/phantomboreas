@@ -58,6 +58,16 @@ public class ParkingPatrolApplication extends Application {
         @Override
         public void onGetRegisteredResult(DJIError error) {
             if(error == DJISDKError.REGISTRATION_SUCCESS) {
+
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "register sdk success", Toast.LENGTH_LONG).show();
+                    }
+                });
+
                 DJISDKManager.getInstance().startConnectionToProduct();
             } else {
                 Handler handler = new Handler(Looper.getMainLooper());
