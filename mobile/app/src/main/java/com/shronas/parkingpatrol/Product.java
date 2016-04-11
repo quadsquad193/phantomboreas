@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.util.Log;
 
 import dji.sdk.Camera.DJICamera;
+import dji.sdk.FlightController.DJIFlightController;
+import dji.sdk.Products.DJIAircraft;
 import dji.sdk.SDKManager.DJISDKManager;
 import dji.sdk.base.DJIBaseProduct;
 
@@ -46,6 +48,28 @@ public class Product {
         updateProduct();
         return this.mCamera;
     } // getCamera()
+
+
+    double getLatitude() {
+        //updateProduct();
+
+        if (mProduct == null)
+            return 0;
+
+        DJIFlightController mFlightController = ((DJIAircraft) mProduct).getFlightController();
+        return mFlightController.getCurrentState().getAircraftLocation().getLatitude();
+    } // getLatitude
+
+
+    double getLongitude() {
+        //updateProduct();
+
+        if (mProduct == null)
+            return 0;
+
+        DJIFlightController mFlightController = ((DJIAircraft) mProduct).getFlightController();
+        return mFlightController.getCurrentState().getAircraftLocation().getLongitude();
+    } // getLongitude
 
 
     protected boolean isConnected() {

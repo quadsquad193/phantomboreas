@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by Shronas on 2/23/16.
@@ -25,7 +26,7 @@ import java.net.URL;
  * Timestamp of when image was captured
  */
 
-public class UploadAsyncTask extends AsyncTask<String, Void, Void> {
+public class UploadAsyncTask extends AsyncTask<Uploadable, Void, Void> {
     private final String LOG_TAG = UploadAsyncTask.class.getSimpleName();
     private Context context;
 
@@ -47,17 +48,23 @@ public class UploadAsyncTask extends AsyncTask<String, Void, Void> {
 
 
     @Override
-    protected Void doInBackground(String... filenames) {
-        String param_name[] = { "latitude", "longitude", "timestamp" };
-        String param_value[] = { "31.179910", "-98.173828", "1457138772" };
-
+    protected Void doInBackground(Uploadable... uploadables) {
         File image;
-        int num = filenames.length;
+        int num = uploadables.length;
 
         Log.d(TAG, Integer.toString(num));
 
         try {
-            for (String filepath : filenames) {
+            for (Uploadable uploadable : uploadables) {
+                Long timestamp = uploadable.getTimestamp();
+                double latitude = uploadable.getLatitude();
+                double longitude = uploadable.getLongitude();
+                String filepath = uploadable.getFilename();
+
+                String param_name[] = { "latitude", "longitude", "timestamp" };
+                String param_value[] = { Double.toString(latitude),
+                        Double.toString(longitude), Long.toString(timestamp) };
+
                 image = new File(filepath);
                 Log.d(TAG, "image found at: "+ filepath);
 

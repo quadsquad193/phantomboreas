@@ -139,23 +139,10 @@ public class MediaManager {
                                 getAbsolutePath() + "/DJI_SPALSH/";
                         mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + destDirectory)));
 
-                        postDownload(destDirectory + test_filename);
+                        ((MainActivity) mActivity).postDownload(destDirectory + test_filename);
                     } // onSuccess()
                 }); // fetchMediaList()
     } // downloadImage()
-
-
-
-    private void postDownload(String path) {
-        final String filePath = path;
-        mActivity.runOnUiThread(new Runnable() {
-            public void run() {
-                showToast(filePath);
-                UploadAsyncTask server = new UploadAsyncTask(mActivity);
-                server.execute(filePath);
-            }
-        });
-    } // postDownload()
 
 
     public void showToast(final String msg) {

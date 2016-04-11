@@ -93,7 +93,6 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
         registerReceiver(mReceiver, filter);
 
         mProductEncapsulated = new Product(this);
-
 /*
         String destDirectory = Environment.getExternalStorageDirectory().
                 getAbsolutePath() + "/DJI_SPALSH/";
@@ -128,6 +127,22 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
 
     @Override
     public void onResume() {
+/*
+        if (mProductEncapsulated != null) {
+            double lat = mProductEncapsulated.getLatitude();
+            double lng = mProductEncapsulated.getLongitude();
+
+            String str = "lat: " + Double.toString(lat) + " long: " + Double.toString(lng);
+            showToast(str);
+        }
+        else
+            showToast("product null");
+
+
+        Long tsLong = System.currentTimeMillis();
+        String ts = tsLong.toString();
+        Log.d("Time: ", ts);*/
+
         Log.e(TAG, "onResume");
         super.onResume();
         initPreviewer();
@@ -379,6 +394,26 @@ public class MainActivity extends Activity implements SurfaceTextureListener,OnC
                 break;
         }
     }
+
+
+    public void postDownload(String path) {
+        final String filePath = path;
+        final Activity mActivity = this;
+
+        this.runOnUiThread(new Runnable() {
+            public void run() {
+                showToast(filePath);
+                UploadAsyncTask server = new UploadAsyncTask(mActivity);
+
+                double latitude = mProductEncapsulated.getLatitude();
+                double longitude = mProductEncapsulated.getLongitude();
+                Long timestamp = System.currentTimeMillis() / 1000; // need in seconds
+                Uploadable uploadable = new Uploadable(filePath, latitude, longitude, timestamp);
+
+                server.execute(uploadable);
+            }
+        });
+    } // postDownload()
 
 /*
     public String getPath(Uri uri) {
