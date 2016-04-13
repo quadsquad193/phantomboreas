@@ -1,16 +1,19 @@
 import pytest
 
+import tempfile
+
 import sqlalchemy
 import datetime
 import os
 
+from phantomboreas.parkinglogservice.db import DB
 from phantomboreas.parkinglogservice.logger import Logger
 from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog
 
 
 
 db_conf = {
-    'sqlite_url':   'sqlite://'
+    'db_url':   'sqlite://'
 }
 
 image = open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test.jpg'))
@@ -74,30 +77,31 @@ class TestParkingLogServiceLogger:
     # Unconfigured loggers should raise an exception when assert_config() is
     # called
     def test_unconfigured_logger(self):
-        logger = Logger()
+        logger = Logger(DB())
 
         with pytest.raises(RuntimeError):
             logger.assert_config()
 
-    # Logger should be able to configure a SQLite connection without error
-    def test_logger_config(self):
-        Logger().config(db_conf)
-
     # Logger should be able to utilize the SQLAlchemy ORM to persist and
     # retrieve results in a database
-    def test_logger_process(self):
-        logger = Logger()
-        logger.config(db_conf)
-        session = logger.db_session()
+    def test_logger_process(self, tmpdir):
+        db = DB()
+        logger = Logger(db)
+
+        db.config(db_conf)
+        logger.config({
+            'image_store_path': str(tmpdir.realpath())
+        })
+
+        session = db.session()
 
         logger.process(payload)
 
         capture_log = session.query(CaptureLog).first()
-        assert capture_log.image        == TEST_IMAGE_STREAM
-        assert capture_log.filename     == 'test.jpg'
-        assert capture_log.latitude     == 38.537002
-        assert capture_log.longitude    == -121.754725
-        assert capture_log.timestamp    == datetime.datetime.fromtimestamp(1457395109)
+        assert capture_log.filename         == 'test.jpg'
+        assert float(capture_log.latitude)  == 38.5370020
+        assert float(capture_log.longitude) == -121.7547250
+        assert capture_log.timestamp        == datetime.datetime.fromtimestamp(1457395109)
 
         assert session.query(PlateLog).count() == 2
         plate_log = session.query(PlateLog).first()
@@ -121,3 +125,5 @@ class TestParkingLogServiceLogger:
 
         assert candidate_log in plate_log.candidates
         assert candidate_log.plate == plate_log
+
+        assert tmpdir.join('test.jpg').read() == TEST_IMAGE_STREAM

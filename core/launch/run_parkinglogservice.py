@@ -21,6 +21,8 @@ assets_conf = {
     'image_store_path':    config.IMAGE_STORE_PATH
 }
 
-parkinglogservice.logger.config(db_conf, assets_conf)
+parkinglogservice.db.config(db_conf)
+parkinglogservice.logger.config(assets_conf)
+parkinglogservice.arbiter.config()
 parkinglogservice.worker.config(redis_conf)
 parkinglogservice.worker.run()

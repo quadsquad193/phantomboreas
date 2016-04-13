@@ -4,7 +4,9 @@ from pytest_dbfixtures import factories
 import pickle
 
 from phantomboreas.parkinglogservice.worker import Worker
+from phantomboreas.parkinglogservice.db import DB
 from phantomboreas.parkinglogservice.logger import Logger
+from phantomboreas.parkinglogservice.arbiter import Arbiter
 
 
 
@@ -24,15 +26,22 @@ redisdb = factories.redisdb('redis_proc', db=1)
 class TestParkingLogServiceWorker:
     # Unconfigured workers should raise an exception when called to run
     def test_unconfigured_worker(self):
-        worker = Worker(Logger())
+        db = DB()
+        logger = Logger(db)
+        arbiter = Arbiter(db)
+        worker = Worker(logger, arbiter)
 
         with pytest.raises(RuntimeError):
             worker.run()
 
-    # Configured workers with unconfigured loggers should raise an exception
-    # when called to run
+    # Configured workers with unconfigured dependencies should raise an
+    # exception when called to run
     def test_configured_worker_with_unconfigured_logger(self):
-        worker = Worker(Logger())
+        db = DB()
+        logger = Logger(db)
+        arbiter = Arbiter(db)
+        worker = Worker(logger, arbiter)
+
         worker.config(redis_conf)
 
         with pytest.raises(RuntimeError):
@@ -44,8 +53,11 @@ class TestParkingLogServiceWorker:
 
     # Show that the worker can dequeue and unpickle payloads from a Redis queue
     def test_worker_redis(self, monkeypatch, redisdb):
-        logger = Logger()
-        worker = Worker(logger)
+        db = DB()
+        logger = Logger(db)
+        arbiter = Arbiter(db)
+        worker = Worker(logger, arbiter)
+
         worker.config(redis_conf)
 
         payload = {'openalpr_results': None}
@@ -53,9 +65,11 @@ class TestParkingLogServiceWorker:
             assert all(p[k] == v for k, v in payload.iteritems())
 
         monkeypatch.setattr(worker, 'redis_client', redisdb)
+        monkeypatch.setattr(db, 'assert_config', lambda: None)
         monkeypatch.setattr(logger, 'assert_config', lambda: None)
+        monkeypatch.setattr(arbiter, 'assert_config', lambda: None)
         monkeypatch.setattr(logger, 'process', process)
 
         redisdb.lpush(redis_conf['queue_key'], pickle.dumps(payload))
 
-        worker.process_alpr()
+        worker.process_alpr_captures()
