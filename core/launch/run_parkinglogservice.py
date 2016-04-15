@@ -1,5 +1,7 @@
 from phantomboreas import parkinglogservice
 
+import datetime
+
 import sqlalchemy
 import config
 
@@ -21,8 +23,13 @@ assets_conf = {
     'image_store_path':    config.IMAGE_STORE_PATH
 }
 
+rules_conf = {
+    'limit': datetime.timedelta(hours=2),
+    'grace': datetime.timedelta(minutes=15),
+}
+
 parkinglogservice.db.config(db_conf)
 parkinglogservice.logger.config(assets_conf)
-parkinglogservice.arbiter.config()
+parkinglogservice.arbiter.config(rules_conf)
 parkinglogservice.worker.config(redis_conf)
 parkinglogservice.worker.run()
