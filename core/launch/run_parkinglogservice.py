@@ -24,8 +24,19 @@ assets_conf = {
 }
 
 rules_conf = {
-    'limit': datetime.timedelta(hours=2),
-    'grace': datetime.timedelta(minutes=15),
+    'timedelta_limit':  datetime.timedelta(hours=2),
+    'timedelta_hot':    datetime.timedelta(minutes=15),
+    'time_start':       datetime.time(hour=8),
+    'time_end':         datetime.time(hour=12+6),
+    'days_enforced':    {
+        'sunday':       True,
+        'monday':       True,
+        'tuesday':      True,
+        'wednesday':    True,
+        'thursday':     True,
+        'friday':       True,
+        'saturday':     False,
+    },
     'gps_proximity': 0.00009 * 25,  # 0.00009 ~= 1 meter
 }
 

@@ -1,3 +1,4 @@
+import datetime
 from sqlalchemy import desc
 
 from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog, CitationLog
@@ -11,8 +12,19 @@ class Arbiter(object):
         self.db = db
 
     def config(self, rules_conf):
-        self.limit          = rules_conf['limit']
-        self.grace          = rules_conf['grace']
+        self.limit          = rules_conf['timedelta_limit']
+        self.hot            = rules_conf['timedelta_hot']
+        self.start          = rules_conf['time_start']
+        self.end            = rules_conf['time_end']
+        self.days           = [{
+            'sunday':       0,
+            'monday':       1,
+            'tuesday':      2,
+            'wednesday':    3,
+            'thursday':     4,
+            'friday':       5,
+            'saturday':     6,
+        }.get(day_name, None) for (day_name, enforce) in rules_conf['days_enforced'].iteritems() if enforce]
         self.gps_proximity  = rules_conf['gps_proximity']
 
         self.configured = True
@@ -27,10 +39,20 @@ class Arbiter(object):
 
         session = self.db.session()
 
-        # Relevant interval times and spatial info for a particular capture
+        # Datetime and Time of capture
         capture_dt          = capture_log.timestamp
+        capture_d           = capture_dt.date()
+
+        # Don't process if capture is not within daily time limits or on day of
+        # weekly enforcement
+        if  (capture_dt < (datetime.datetime.combine(capture_d, self.start) + self.limit)) or \
+            (capture_dt > datetime.datetime.combine(capture_d, self.end)) or \
+            (capture_d.weekday() not in self.days):
+            return
+
+        # Relevant time and spatial ranges particular capture
         upper_dt            = capture_dt - self.limit
-        lower_dt            = upper_dt - self.grace
+        lower_dt            = upper_dt - self.hot
         capture_latitude    = float(capture_log.latitude)
         capture_longitude   = float(capture_log.longitude)
         latitude_lower      = capture_latitude - self.gps_proximity
