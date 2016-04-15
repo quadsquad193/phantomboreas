@@ -60,15 +60,19 @@ class TestParkingLogServiceWorker:
 
         worker.config(redis_conf)
 
-        payload = {'openalpr_results': None}
-        def process(p):
+        payload = {'openalpr_results': {'4': 2, '0': 'blaze it'}}
+        def logger_process(p):
             assert all(p[k] == v for k, v in payload.iteritems())
+            return True
+        def arbiter_process(c):
+            assert c
 
         monkeypatch.setattr(worker, 'redis_client', redisdb)
         monkeypatch.setattr(db, 'assert_config', lambda: None)
         monkeypatch.setattr(logger, 'assert_config', lambda: None)
         monkeypatch.setattr(arbiter, 'assert_config', lambda: None)
-        monkeypatch.setattr(logger, 'process', process)
+        monkeypatch.setattr(logger, 'process', logger_process)
+        monkeypatch.setattr(arbiter, 'process', arbiter_process)
 
         redisdb.lpush(redis_conf['queue_key'], pickle.dumps(payload))
 
