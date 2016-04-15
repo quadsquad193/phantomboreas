@@ -16,6 +16,8 @@ SQLALCHEMY_DATABASE_DEFINITION = 'mysql://' + secrets.DB_USER + ':' + secrets.DB
 SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_DEFINITION + '/' + 'app'
 DATABASE_CONNECT_OPTIONS = {}
 
+BCRYPT_LOG_ROUNDS = 12
+
 # Application threads. A common general assumption is
 # using 2 per available processor cores - to handle
 # incoming requests using one and performing background

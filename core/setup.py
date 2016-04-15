@@ -12,6 +12,10 @@ setup(
         'flask',
         'flask-sqlalchemy',
         'redis',
+        'MySQL-python',
+        'wtforms',
+        'flask-bcrypt',
+        'flask-login'
     ],
     setup_requires=['pytest-runner'],
     test_requires=['pytest', 'pytest-dbfixtures'],
