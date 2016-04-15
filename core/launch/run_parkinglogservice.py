@@ -26,6 +26,7 @@ assets_conf = {
 rules_conf = {
     'limit': datetime.timedelta(hours=2),
     'grace': datetime.timedelta(minutes=15),
+    'gps_proximity': 0.00009 * 25,  # 0.00009 ~= 1 meter
 }
 
 parkinglogservice.db.config(db_conf)
