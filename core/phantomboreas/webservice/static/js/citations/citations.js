@@ -58,6 +58,7 @@ Citations = (function() {
             this.elem.html(rendered).off();
 
         this.bind();
+        $(document).foundation();
     };
 
     Citation.prototype.bind = function() {

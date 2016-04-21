@@ -9,8 +9,29 @@ body, h1, h2, h3, h4, h5, h6 {
 
 div.row.citation {
     padding-top: 0.5em;
-    padding-bottom: 2em;
-    border-bottom: 2px solid black;
+    padding-bottom: 1.5em;
+
+    overflow: none;
+}
+
+div.info {
+    padding-left: 0.5em;
+}
+
+div.info.status-left-border {
+    border-left: 4px solid gray;
+}
+
+div.info.status-left-border.verified {
+    border-left: 4px solid green;
+}
+
+div.info.status-left-border.dismissed {
+    border-left: 4px solid red;
+}
+
+div.info.status-left-border.delegate-to {
+    border-left: 4px solid orange;
 }
 
 div.row.citation div.row.evidence {
@@ -18,10 +39,12 @@ div.row.citation div.row.evidence {
     padding-top: 0.5em;
 }
 
+div.statuses div.callout {
+    font-size: 0.8em;
+}
+
 div.row.citation div.row.evidence div.column {
     padding: 1em;
-
-    border-left: 1px dotted gray;
 }
 
 span.citation-title {
@@ -32,6 +55,12 @@ span.citation-title {
 
 span.citation-time {
     font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+}
+
+span.citation-time-small {
+    font-size: 0.8em;
     font-weight: 700;
     margin-bottom: 0.5em;
 }
