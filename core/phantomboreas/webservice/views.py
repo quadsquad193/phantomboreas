@@ -34,3 +34,9 @@ class IndexView(MethodView):
     		capture_list.append(c)
 
         return render_template('index.html', capture_list=capture_list), 200
+
+class CitationsView(MethodView):
+    # decorators = [login_required]
+
+    def get(self):
+        return render_template('citations.html'), 200

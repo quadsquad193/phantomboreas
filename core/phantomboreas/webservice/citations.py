@@ -19,7 +19,7 @@ def api_get_citation(capture_id):
 
     citation = citation_log_dump(citation_log)
 
-    return jsonify(citation), 200
+    return jsonify({'success': True, 'citation': citation_log_dump(citation_log)}), 200
 
 def api_put_citation(capture_id):
     session = db_session()
@@ -40,15 +40,22 @@ def api_put_citation(capture_id):
 
 def delegate(session, citation_log, new_delegate_id=None):
     if new_delegate_id is None: return
+    if new_delegate_id == citation_log.id: return
+
+    # Remove delegate
+    if new_delegate_id == 0:
+        citation_log.delegate = None
+        return
+
+    new_delegate = session.query(CitationLog).get(new_delegate_id)
+
+    # No such citation exists
+    if new_delegate is None: return
 
     # Remove old delegate
     citation_log.delegate = None
 
-    # Short circuit; set no new delegate
-    if new_delegate_id == 0: return
-
     # Traverse self-referential relation "tree" until we reach the root delegate
-    new_delegate = session.query(CitationLog).get(new_delegate_id)
     while(new_delegate.delegate): new_delegate = new_delegate.delegate
 
     # Set new delegate
@@ -125,4 +132,8 @@ def plate_log_dump(plate_log):
         } for c in candidate_logs],
         'timestamp':    int(time.mktime(capture_log.timestamp.timetuple())),
         'capture_url':  capture_log.filename,
+        'coordinates': {
+            'longitude':    float(capture_log.longitude),
+            'latitude':     float(capture_log.latitude),
+        }
     }

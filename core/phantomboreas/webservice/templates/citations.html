@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Drone Parking Enforcement</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,900,700,300,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/foundation.min.css') }}" type="text/css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/citations/citations.css') }}" type="text/css">
+</head>
+
+<body>
+
+    <div id="citation-app-container">
+
+    </div>
+
+    {% raw %}
+    <script type="x-tmpl-mustache" id="template-citation">
+        <div class="row citation" id="citation-{{ citation_id }}">
+            <div class="row">
+                <div class="column medium-4 plate">
+                    <img class="capture" src="{{ plate_image_url }}"/>
+                    {{ #plate.candidates }}
+                        <span class="license-plate-text">{{ license_plate }}</span>
+                    {{ /plate.candidates }}
+                </div>
+                <div class="column medium-8 info">
+                    <div class="row">
+                        <div class="column medium-8 actions">
+                            <span class="citation-title">Citation &#35;{{ citation_id }}</span><br/>
+                            <span class="citation-time">{{ plate_human_time }}</span><br/>
+                            <a>&#40;{{ plate.coordinates.longitude }}&#44; {{ plate.coordinates.latitude }}&#41;</a><br/>
+                            <hr/>
+
+                            {{ ^is_actionable }}
+                            <span class="citation-note">
+                                This citation is not actionable because
+                                {{ #status.verified }}it is already verified.{{ /status.verified }}
+                                {{ #status.dismissed }}it is already dismissed.{{ /status.dismissed }}
+                                {{ #status.delegate_to }}it delegates to another citation.{{ /status.delegate_to }}
+                            </span><br/>
+                            {{ /is_actionable }}
+
+                            {{ #is_actionable }}
+                            <a class="button action-verify">Verify Citation</a><br/>
+                            <a class="button action-dismiss">Dismiss Citation</a><br/>
+                            {{ /is_actionable }}
+
+                            {{ ^can_delegate_to }}
+                            <span class="citation-note">
+                                This citation cannot delegate to another citation because
+                                {{ #status.verified }}it is already verified.{{ /status.verified }}
+                                {{ #status.dismissed }}it is already dismissed.{{ /status.dismissed }}
+                                {{ #status.delegate_to }}it already delegates.{{ /status.delegate_to }}
+                                {{ #status.delegations }}it must serve as a delegate itself.{{ /status.delegations }}
+                            </span><br/>
+                            {{ /can_delegate_to }}
+
+                            {{ #can_delegate_to }}
+                            <div class="input-group">
+                                <span class="input-group-label">Delegate To Citation #</span>
+                                <input class="input-group-field delegate-to" type="number">
+                                <div class="input-group-button">
+                                    <input type="submit" class="button action-delegate-to" value="Submit">
+                                </div>
+                            </div>
+                            {{ /can_delegate_to }}
+                        </div>
+                        <div class="column medium-4 statuses">
+                            {{ #status.verified }}
+                            <div class="small callout success">
+                                <span class="status">This citation has been verified.</span><br/>
+                                <hr/>
+                                <a class="button tiny revoke-verify">Revoke Verification</a>
+                            </div>
+                            {{ /status.verified }}
+
+                            {{ #status.dismissed }}
+                            <div class="small callout alert">
+                                <span class="status">This citation has been dismissed.</span><br/>
+                                <hr/>
+                                <a class="button tiny revoke-dismiss">Revoke Dismissal</a>
+                            </div>
+                            {{ /status.dismissed }}
+
+                            {{ #status.delegate_to }}
+                            <div class="small callout warning">
+                                <span>This citation delegates to <a href="#citation-{{ . }}">Citation &#35;{{ . }}</a>.</span><br/>
+                                <hr/>
+                                <a class="button tiny revoke-delegate-to">Remove Delegationn</a>
+                            </div>
+                            {{ /status.delegate_to }}
+
+                            {{ #status.delegations }}
+                            <div class="small callout secondary">
+                                <span>This citation has been delegated by <a href="#citation-{{ . }}">Citation &#35;{{ . }}</a>.</span>
+                            </div>
+                            {{ /status.delegations }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row small-up-2 medium-up-3 large-up-4 evidence">
+            {{ #evidence }}
+                <div class="column">
+                    <img class="capture" src="{{ context_capture_url }}"/>
+                    <span class="citation-time">{{ context_human_time }}</span><br/>
+                    {{ #candidates }}
+                    <span class="license-plate-text">{{ license_plate }}</span>
+                    {{ /candidates }}
+                </div>
+            {{ /evidence }}
+            </div>
+        </div>
+    </script>
+    {% endraw %}
+
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/foundation.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/mustache.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/citations/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/citations/citations.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/citations/app.js') }}"></script>
+</body>
+
+</html>

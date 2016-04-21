@@ -1,0 +1,49 @@
+body {
+    background-color: white;
+    color: black;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lato', sans-serif;
+}
+
+div.row.citation {
+    padding-top: 0.5em;
+    padding-bottom: 2em;
+    border-bottom: 2px solid black;
+}
+
+div.row.citation div.row.evidence {
+    margin-top: 2em;
+    padding-top: 0.5em;
+}
+
+div.row.citation div.row.evidence div.column {
+    padding: 1em;
+
+    border-left: 1px dotted gray;
+}
+
+span.citation-title {
+    font-size: 1.2em;
+    font-weight: 900;
+    margin-bottom: 0.5em;
+}
+
+span.citation-time {
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+}
+
+span.citation-note {
+    font-size: 0.8em;
+    font-weight: 300;
+}
+
+span.license-plate-text {
+    margin-right: 1em;
+
+    font-family: 'Droid Sans Mono';
+    font-size: 0.8em;
+}
