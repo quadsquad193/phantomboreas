@@ -20,6 +20,7 @@ from flask.ext.login import current_user
 import process
 
 
+
 class IndexView(MethodView):
     decorators = [login_required]
     def get(self):
@@ -45,6 +46,11 @@ class IndexView(MethodView):
 
         return render_template('index.html', capture_list=capture_list, current_user=current_user), 200
 
+class CitationsView(MethodView):
+    decorators = [login_required]
+
+    def get(self):
+        return render_template('citations.html'), 200
 
 class UserLogoutView(MethodView):
     decorators = [login_required]
@@ -82,4 +88,3 @@ class AdminView(MethodView):
             users.append(u.toDict())
 
         return render_template('admin.html', users=users, current_user=current_user), 200
-

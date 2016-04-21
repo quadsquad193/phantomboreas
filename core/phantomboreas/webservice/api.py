@@ -107,7 +107,9 @@ class UserAPI(MethodView):
 
 class CitationAPI(MethodView):
     def get(self, citation_id):
-        if citation_id is None: return api_get_citations_list()
+
+        if citation_id is None: return api_get_citations_list(timedelta=datetime.timedelta(days=99), since=(datetime.datetime.now() + datetime.timedelta(days=1)))
+        # if citation_id is None: return api_get_citations_list()
 
         return api_get_citation(citation_id)
 
