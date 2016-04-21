@@ -1,24 +1,26 @@
-from flask import request, send_from_directory
+from flask import request, send_from_directory, make_response
 from flask.views import MethodView
 
 from flask import jsonify
 from flask import request
 
-from phantomboreas.webservice import app, bcrypt
+from phantomboreas.webservice import app, bcrypt, admin_required
 
 from flask.ext.security import login_required
 
 from phantomboreas.db.models import Base, DroneAuth, User
 from phantomboreas.webservice import db_session
 
+import types
+
 class CaptureAPI(MethodView):
-	@login_required
+	decorators = [login_required]
 	def get(self, filename):
 		return send_from_directory(app.config['IMAGE_STORE_PATH'], filename)
 
 
 class DroneAuthAPI(MethodView):
-	@login_required
+	decorators = [login_required]
 	def post(self):
 		session = db_session()
 
@@ -27,31 +29,75 @@ class DroneAuthAPI(MethodView):
 		session.add(drone_auth)
 		session.commit()
 
-		return jsonify(key=drone_auth.key), 200
+		# response = make_response(drone_auth.key)
+
+		# response.headers["Content-Disposition"] = "attachment; filename=key.txt"
+
+		return jsonify({'key': drone_auth.key}), 200
 
 
-class TestUsersAPI(MethodView):
-	def get(self):
-		userID = request.args.get('userID')
-		plaintext = request.args.get('plaintext')
 
+
+
+class UserAPI(MethodView):
+	decorators = [login_required, admin_required]
+	def get(self, user_id):
 		session = db_session()
 
-		user = session.query(User).filter_by(id=userID).first()
+		if userId:
+			u = session.query(User).filter_by(id=user_id)
 
-		if bcrypt.check_password_hash(user.password, plaintext):
-			return jsonify({}), 200
+			if u:
+				return jsonify(u.first().toDict()), 200
+			else:
+				return '', 404
 
-		return jsonify({}), 403
+		else:
+			users = []
+
+			for u in session.query(User).all():
+				users.append(u.toDict())
+
+			return jsonify(users), 200
+
 
 
 	def post(self):
+		content = request.get_json()
+
+		if not content.has_key('username') or not content.has_key('password'):
+			return '', 400
+
 		session = db_session()
 
-		user = User(username='mhmachado', password=bcrypt.generate_password_hash('password'), is_admin=True)
+		user = User(username=content.get('username'), password=bcrypt.generate_password_hash(content.get('password')), is_admin=False)
 
 		session.add(user)
 		session.commit()
 
-		return jsonify({'id': user.id}), 200
+		return jsonify(user.toDict()), 200
+
+	def patch(self, user_id):
+		content = request.get_json()
+
+		session = db_session()
+		user = session.query(User).filter_by(id=user_id)
+
+		if not user:
+			return '', 404
+
+		# Admin shouldn't need to change user passwords or usernames
+		# only allowing admins to make others users admins
+		# Might be better to make this a seperate action
+		if content.has_key('is_admin'):
+			if isinstance(content.get('is_admin'), bool):
+				user = user.first()
+				user.is_admin = content.get('is_admin')
+				session.commit()
+				return '', 200
+			else:
+				return '', 400
+		else:
+			return '', 304
+
 

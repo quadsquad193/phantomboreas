@@ -9,3 +9,4 @@ Flask-WTF
 flask-bcrypt
 flask-login
 flask-security
+itsdangerous

@@ -1,4 +1,4 @@
-from phantomboreas.webservice import app, bcrypt
+from phantomboreas.webservice import app, bcrypt, admin_required
 
 from flask import request
 from flask.views import MethodView
@@ -16,11 +16,12 @@ from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog, Us
 from phantomboreas.webservice import db_session, bcrypt
 from phantomboreas.webservice.forms import UsernamePasswordForm
 from flask.ext.security import login_required
+from flask.ext.login import current_user
 import process
 
 
 class IndexView(MethodView):
-    @login_required
+    decorators = [login_required]
     def get(self):
     	session = db_session()
 
@@ -42,11 +43,11 @@ class IndexView(MethodView):
 
     		capture_list.append(c)
 
-        return render_template('index.html', capture_list=capture_list), 200
+        return render_template('index.html', capture_list=capture_list, current_user=current_user), 200
 
 
 class UserLogoutView(MethodView):
-    @login_required
+    decorators = [login_required]
     def get(self):
         logout_user()
 
@@ -69,4 +70,16 @@ class SigninView(MethodView):
             return redirect(url_for('index'))
         else:
             return redirect(url_for('signin'))
+
+
+class AdminView(MethodView):
+    decorators = [login_required, admin_required]
+    def get(self):
+        session = db_session()
+        users = []
+
+        for u in session.query(User).all():
+            users.append(u.toDict())
+
+        return render_template('admin.html', users=users, current_user=current_user), 200
 

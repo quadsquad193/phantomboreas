@@ -12,6 +12,9 @@ class User(Base, UserMixin):
 	is_admin = Column(Boolean, default=False)
 
 
+	def toDict(self):
+		return {'id': self.id, 'username': self.username, 'is_admin': self.is_admin}
+
 	def __init__(self, username, password, is_admin=False):
 		self.username = username
 		self.password = password

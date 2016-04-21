@@ -64,6 +64,14 @@
                     <li>
                         <a class="page-scroll" href="#more-details">More Details</a>
                     </li>
+                    {% if current_user.is_admin %}
+                        <li>
+                            <a href="/admin">Admin</a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a href="/signout">Sign Out</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
