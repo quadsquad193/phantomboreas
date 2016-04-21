@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, LargeBinary, String, Float, DateTime, Numeric
-from sqlalchemy.dialects.mysql import MEDIUMBLOB
+from sqlalchemy import Column, Integer, String, DateTime, Numeric
 from sqlalchemy.orm import relationship
 
 from base import Base

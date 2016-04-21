@@ -11,7 +11,6 @@ class CandidateLog(Base):
     id = Column(Integer, primary_key=True)
 
     license_plate   = Column(String(32))
-    verified        = Column(Boolean, default=False)
     confidence      = Column(Float)
 
     plate_id = Column(Integer, ForeignKey('plate_log.id'))

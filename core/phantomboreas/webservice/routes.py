@@ -2,8 +2,8 @@ from phantomboreas.webservice import app, api, views, admin_required
 from flask.ext.login import login_required
 
 
-capture_view = login_required(api.CaptureAPI.as_view('capture'))
-app.add_url_rule('/assets/capture/<filename>', view_func=capture_view)
+capture_api_view = login_required(api.CaptureAPI.as_view('capture'))
+app.add_url_rule('/assets/capture/<filename>', view_func=capture_api_view)
 
 drone_auth_view = login_required(api.DroneAuthAPI.as_view('drone_auth'))
 app.add_url_rule('/drone_auth', view_func=drone_auth_view)
@@ -20,3 +20,8 @@ app.add_url_rule('/admin', view_func=admin_view)
 user_view = admin_required(login_required(api.UserAPI.as_view('users')))
 app.add_url_rule('/users', view_func=user_view, methods=['GET', 'POST'])
 app.add_url_rule('/users/<int:user_id>', view_func=user_view, methods=['GET', 'PATCH'])
+
+citation_api_view   = api.CitationAPI.as_view('citation')
+
+app.add_url_rule('/api/citation/', defaults={'citation_id': None}, methods=['GET'], view_func=citation_api_view)
+app.add_url_rule('/api/citation/<int:citation_id>', methods=['GET', 'PUT'], view_func=citation_api_view)
