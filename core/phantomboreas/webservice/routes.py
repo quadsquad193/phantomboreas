@@ -1,5 +1,12 @@
 from phantomboreas.webservice import app, api, views
 
-app.add_url_rule('/assets/capture/<filename>', view_func=api.CaptureAPI.as_view('capture'))
-app.add_url_rule('/api/citation/', view_func=api.CitationAPI.as_view('citation'))
-app.add_url_rule('/', view_func=views.IndexView.as_view('index'))
+
+
+capture_api_view    = api.CaptureAPI.as_view('capture')
+citation_api_view   = api.CitationAPI.as_view('citation')
+index_view          = views.IndexView.as_view('index')
+
+app.add_url_rule('/assets/capture/<filename>', view_func=capture_api_view)
+app.add_url_rule('/api/citation/', defaults={'citation_id': None}, methods=['GET'], view_func=citation_api_view)
+app.add_url_rule('/api/citation/<int:citation_id>', methods=['GET', 'PUT'], view_func=citation_api_view)
+app.add_url_rule('/', view_func=index_view)

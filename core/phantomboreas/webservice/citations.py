@@ -1,16 +1,77 @@
-import json
+from flask import request, jsonify
+from sqlalchemy import desc
+
 import time
 import datetime
-
-from sqlalchemy import desc
 
 from phantomboreas.webservice import db_session
 from phantomboreas.db.models import CitationLog, CaptureLog, PlateLog, CandidateLog
 
 
 
-def api_get_interval(timedelta=datetime.timedelta(days=2), since=(datetime.datetime.now() + datetime.timedelta(days=1))):
+def api_get_citation(capture_id):
     session = db_session()
+
+    citation_log = session.query(CitationLog).get(capture_id)
+
+    if citation_log is None:
+        return jsonify({}), 404
+
+    citation = citation_log_dump(citation_log)
+
+    return jsonify(citation), 200
+
+def api_put_citation(capture_id):
+    session = db_session()
+
+    citation_log = session.query(CitationLog).get(capture_id)
+
+    if citation_log is None:
+        return jsonify({'success': False, 'message': 'Citation not found.'}), 404
+
+    delegate(session, citation_log, request.form.get('delegate_to', None, type=int))
+    verify(session, citation_log, bool_option(request.form.get('verify', None)))
+    dismiss(session, citation_log, bool_option(request.form.get('dismiss', None)))
+
+    session.add(citation_log)
+    session.commit()
+
+    return jsonify({'success': True, 'citation': citation_log_dump(citation_log)}), 200
+
+def delegate(session, citation_log, new_delegate_id=None):
+    if new_delegate_id is None: return
+
+    # Remove old delegate
+    citation_log.delegate = None
+
+    # Short circuit; set no new delegate
+    if new_delegate_id == 0: return
+
+    # Traverse self-referential relation "tree" until we reach the root delegate
+    new_delegate = session.query(CitationLog).get(new_delegate_id)
+    while(new_delegate.delegate): new_delegate = new_delegate.delegate
+
+    # Set new delegate
+    citation_log.delegate = new_delegate
+
+def verify(session, citation_log, verify=None):
+    if verify is None: return
+
+    citation_log.verified = verify
+    if verify: citation_log.dismissed = False
+
+def dismiss(session, citation_log, dismiss=None):
+    if dismiss is None: return
+
+    citation_log.dismissed = dismiss
+    if dismiss: citation_log.verified = False
+
+def api_get_citations_list(timedelta=datetime.timedelta(days=2), since=(datetime.datetime.now() + datetime.timedelta(days=1))):
+    session = db_session()
+
+    filter_verified     = bool_option(request.args.get('verified', None))
+    filter_dismissed    = bool_option(request.args.get('dismissed', None))
+    filter_delegator    = bool_option(request.args.get('delegator', None))
 
     end_dt = since - timedelta
 
@@ -19,20 +80,39 @@ def api_get_interval(timedelta=datetime.timedelta(days=2), since=(datetime.datet
         join(PlateLog.capture).\
         filter(CaptureLog.timestamp.between(end_dt, since))
 
+    if filter_verified is not None:
+        q = q.filter(CitationLog.verified.is_(filter_verified))
+
+    if filter_dismissed is not None:
+        q = q.filter(CitationLog.dismissed.is_(filter_dismissed))
+
+    if filter_delegator is not None:
+        if filter_delegator:
+            q = q.filter(CitationLog.delegate_id.isnot(None))
+        else:
+            q = q.filter(CitationLog.delegate_id.is_(None))
+
     citations = q.all()
 
-    citations_repr = [{
-        'citation_id':  c.id,
-        'status':       {
-            'verified':     c.verified,
-            'dismissed':    c.dismissed,
-            'hidden':       c.hidden,
-        },
-        'plate':        plate_log_dump(c.plate),
-        'evidence':     [plate_log_dump(e) for e in c.evidence],
-    } for c in citations]
+    citations_repr = [citation_log_dump(c) for c in citations]
 
-    return json.dumps({'citations': citations_repr}), 200
+    return jsonify({'citations': citations_repr}), 200
+
+def bool_option(val):
+    return True if val == 'true' else False if val == 'false' else None
+
+def citation_log_dump(citation_log):
+    return {
+        'citation_id':  citation_log.id,
+        'status':       {
+            'verified':     citation_log.verified,
+            'dismissed':    citation_log.dismissed,
+            'delegate_to':   citation_log.delegate_id,
+            'delegations':  [d.id for d in citation_log.delegations],
+        },
+        'plate':        plate_log_dump(citation_log.plate),
+        'evidence':     [plate_log_dump(e) for e in citation_log.evidence],
+    }
 
 def plate_log_dump(plate_log):
     capture_log     = plate_log.capture

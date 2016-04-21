@@ -17,7 +17,6 @@ class CitationLog(Base):
 
     verified    = Column(Boolean, default=False)
     dismissed   = Column(Boolean, default=False)
-    hidden      = Column(Boolean, default=False)
 
     plate_id    = Column(Integer, ForeignKey('plate_log.id'))
 
