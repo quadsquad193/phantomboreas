@@ -21,11 +21,9 @@ user_view = admin_required(login_required(api.UserAPI.as_view('users')))
 app.add_url_rule('/users', view_func=user_view, methods=['GET', 'POST'])
 app.add_url_rule('/users/<int:user_id>', view_func=user_view, methods=['GET', 'PATCH'])
 
-citation_api_view   = api.CitationAPI.as_view('citation')
-citations_view      = views.CitationsView.as_view('citations')
+citation_api_view   = login_required(api.CitationAPI.as_view('citation'))
+citations_view      = login_required(views.CitationsView.as_view('citations'))
 
-app.add_url_rule('/assets/capture/<filename>', view_func=capture_api_view)
 app.add_url_rule('/api/citation/', defaults={'citation_id': None}, methods=['GET'], view_func=citation_api_view)
 app.add_url_rule('/api/citation/<int:citation_id>', methods=['GET', 'PUT'], view_func=citation_api_view)
 app.add_url_rule('/citations/', view_func=citations_view)
-app.add_url_rule('/', view_func=index_view)

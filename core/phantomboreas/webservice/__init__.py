@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, abort
 from flask.ext.login import LoginManager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -37,7 +37,7 @@ def admin_required(f):
 	@wraps(f)
 	def decorator(*args, **kwargs):
 		if current_user.is_authenticated and not current_user.is_admin:
-			abort(401)
+			about(401)
 		return f(*args, **kwargs)
 	return decorator
 

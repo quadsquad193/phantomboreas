@@ -106,6 +106,7 @@ class UserAPI(MethodView):
 
 
 class CitationAPI(MethodView):
+    decorators = [login_required]
     def get(self, citation_id):
 
         if citation_id is None: return api_get_citations_list(timedelta=datetime.timedelta(days=99), since=(datetime.datetime.now() + datetime.timedelta(days=1)))
