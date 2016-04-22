@@ -37,7 +37,7 @@ def admin_required(f):
 	@wraps(f)
 	def decorator(*args, **kwargs):
 		if current_user.is_authenticated and not current_user.is_admin:
-			about(401)
+			abort(401)
 		return f(*args, **kwargs)
 	return decorator
 
