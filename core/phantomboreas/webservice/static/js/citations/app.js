@@ -8,7 +8,11 @@ $(document).ready(function() {
     service     = new Citations.service('/api/citation/');
     app         = new Citations.app($('#citation-app-container'), urls, templates, service);
 
-    app.init();
+    app.init(parseInt(location.hash.slice(1)) || undefined);
+
+    window.addEventListener("hashchange", function(event) {
+        app.load(parseInt(location.hash.slice(1)) || undefined);
+    }, false);
 
     $(document).foundation();
 });

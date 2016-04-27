@@ -21,7 +21,7 @@
 
             <div id="citation-app-topbar">
                 <div class="top-bar-left">
-                    <a href="#" data-toggle="off-canvas-menu">
+                    <a data-toggle="off-canvas-menu">
                         <i class="fa fa-2x fa-caret-left"></i>
                         <span>&nbsp;</span>
                         <i class="fa fa-2x fa-bars"></i>
@@ -29,8 +29,8 @@
                 </div>
                 <div class="top-bar-right">
                     <ul class="menu">
-                    <li><a href="#">Admin</a></li>
-                    <li><a href="#">Sign Out</a></li>
+                    <li><a>Admin</a></li>
+                    <li><a>Sign Out</a></li>
                     </ul>
                 </div>
             </div>
@@ -119,7 +119,7 @@
 
                                 {{ #status.delegate_to }}
                                 <div class="small callout warning">
-                                    <span>This citation delegates to <a href="#citation-{{ . }}">Citation &#35;{{ . }}</a>.</span><br/>
+                                    <span>This citation delegates to <a href="#{{ . }}">Citation &#35;{{ . }}</a>.</span><br/>
                                     <hr/>
                                     <a class="button tiny revoke-delegate-to">Remove Delegationn</a>
                                 </div>
@@ -127,7 +127,7 @@
 
                                 {{ #status.delegations }}
                                 <div class="small callout secondary">
-                                    <span>This citation has been delegated by <a href="#citation-{{ . }}">Citation &#35;{{ . }}</a>.</span>
+                                    <span>This citation has been delegated by <a href="#{{ . }}">Citation &#35;{{ . }}</a>.</span>
                                 </div>
                                 {{ /status.delegations }}
                             </div>

@@ -90,21 +90,37 @@ Citations = (function() {
         this.citations = {};
     };
 
-    CitationService.prototype.getCitations = function() {
-        var self = this;
-
-        return $.get(this.baseUrl, function(data) {
-            citations = data.citations;
-
-            for (var i = 0; i < citations.length; ++i) {
-                citation = new Citation(citations[i]);
-                self.citations[citation.id] = citation;
-            }
-        }, 'json');
+    CitationService.prototype.flush = function() {
+        this.citations = {};
     };
 
     CitationService.prototype.getCitation = function(id) {
         var self = this;
+
+        return $.get(this.baseUrl + id, function(data) {
+            response_citation = new Citation(data.citation);
+            self.flush();
+            self.citations[response_citation.id] = response_citation;
+        }, 'json');
+    };
+
+    CitationService.prototype.getCitations = function() {
+        var self = this;
+
+        return $.get(this.baseUrl, function(data) {
+            response_citations = data.citations;
+            self.flush();
+            for (var i = 0; i < response_citations.length; ++i) {
+                response_citation = new Citation(response_citations[i]);
+                self.citations[response_citation.id] = response_citation;
+            }
+        }, 'json');
+    };
+
+    CitationService.prototype.updateCitation = function(id) {
+        var self = this;
+
+        if (!self.citations.hasOwnProperty(id)) return;
 
         $.ajax({
             url: this.baseUrl + id,
@@ -143,8 +159,8 @@ Citations = (function() {
             citation.update(repr);
 
             if (key == 'delegate_to') {
-                if (value == 0) self.getCitation(old_repr.status.delegate_to);
-                else self.getCitation(repr.status.delegate_to);
+                if (value == 0) self.updateCitation(old_repr.status.delegate_to);
+                else self.updateCitation(repr.status.delegate_to);
             }
         }).fail(function(data) {
             alert('Could not submit request.');
@@ -166,9 +182,11 @@ Citations = (function() {
             this.container.append(citations[id].elem);
     };
 
-    CitationApp.prototype.init = function() {
-        var self = this;
+    CitationApp.prototype.detach = function() {
+        this.container.empty();
+    };
 
+    CitationApp.prototype.init = function(id) {
         Citation.service = this.service;
 
         Citation.urls = this.urls;
@@ -176,8 +194,19 @@ Citations = (function() {
         Mustache.parse(this.templates.citation);
         Citation.templates.citation = this.templates.citation;
 
-        promise = this.service.getCitations();
+        this.load(id);
+    };
+
+    CitationApp.prototype.load = function(id) {
+        var self = this;
+
+        promise = undefined;
+
+        if (id == undefined) promise = this.service.getCitations();
+        else promise = this.service.getCitation(id);
+
         promise.done(function() {
+            self.detach();
             self.attach();
             $(document).foundation();
         });
