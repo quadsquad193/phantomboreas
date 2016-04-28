@@ -9,22 +9,58 @@
     <link href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/fonts/fontawesome-webfont.woff' rel='stylesheet' type='text/css'>
     <link href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/foundation.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/leaflet.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/citations/citations.css') }}" type="text/css">
 </head>
 
 <body>
-    <div class="off-canvas-wrapper">
-        <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
-            <ul id="off-canvas-menu" class="off-canvas position-left vertical menu" data-off-canvas>
+    <div class="min-vh off-canvas-wrapper">
+        <div class="min-vh off-canvas-wrapper-inner" data-off-canvas-wrapper>
+            <div id="off-canvas-sidebar" class="min-vh off-canvas position-left" data-off-canvas>
+                <div class="row sidemap">
+                    <div class="column small-12">
+                        <div id="citation-app-map">
 
-            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row sidepanel">
+                    <hr/>
+                    <div class="column small-12 medium-8">
+                        <span class="label">Citation Search</span>
+                        <form id="citation-app-search">
+                            <label>Start Date &amp; Time
+                                <input type="datetime-local" name="start_datetime">
+                            </label>
+                            <label>End Date &amp; Time
+                                <input type="datetime-local" name="end_datetime">
+                            </label>
+                            <label>License Plate
+                                <input type="text" name="license_plate">
+                            </label>
+                            <a id="citation-search-submit" class="tiny button">View</a>
+                            <a id="citation-search-reset" class="tiny button">Reset</a>
+                        </form>
+                    </div>
+                    <div class="column small-12 medium-4">
+                        <span class="label">Show&#47;Hide Items</span>
+                        <ul id="citation-app-controls" class="menu vertical expanded">
+                            <li><a id="citation-control-toggle-verified" class="tiny button success">Verfied</a></li>
+                            <li><a id="citation-control-toggle-dismissed" class="tiny button alert">Dismissed</a></li>
+                            <li><a id="citation-control-toggle-delegate-to" class="tiny button warning">Delegated</a></li>
+                            <li><a id="citation-control-toggle-evidence" class="tiny button secondary">Evidence</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
             <div id="citation-app-topbar">
                 <div class="top-bar-left">
-                    <a data-toggle="off-canvas-menu">
+                    <a data-toggle="off-canvas-sidebar">
                         <i class="fa fa-2x fa-caret-left"></i>
                         <span>&nbsp;</span>
-                        <i class="fa fa-2x fa-bars"></i>
+                        <i class="fa fa-2x fa-search"></i>
                     </a>
                 </div>
                 <div class="top-bar-right">
@@ -44,22 +80,23 @@
 
     {% raw %}
     <script type="x-tmpl-mustache" id="template-citation">
-        <div class="row citation" id="citation-{{ citation_id }}">
+        <div class="row citation hideable {{ #status.verified }}verified{{ /status.verified }} {{ #status.dismissed }}dismissed{{ /status.dismissed }} {{ #status.delegate_to }}delegate-to{{ /status.delegate_to }}" id="citation-{{ citation_id }}">
+            <hr/>
             <div class="column small-12">
                 <div class="row">
-                    <div class="column medium-4 plate">
+                    <div class="column small-12 medium-4 plate">
                         <img class="capture" src="{{ plate_image_url }}"/>
                         {{ #plate.candidates }}
                             <span class="license-plate-text">{{ license_plate }}</span>
                         {{ /plate.candidates }}
                     </div>
-                    <div class="column medium-8">
+                    <div class="column small-12 medium-8">
                         <div class="row">
-                            <div class="column medium-8 actions">
-                                <div class="info status-left-border {{ #status.verified }}verified{{ /status.verified }} {{ #status.dismissed }}dismissed{{ /status.dismissed }} {{ #status.verified }}verified{{ /status.verified }} {{ #status.delegate_to }}delegate-to{{ /status.delegate_to }}">
+                            <div class="column small-12 medium-8 actions">
+                                <div class="info status-left-border {{ #status.verified }}verified{{ /status.verified }} {{ #status.dismissed }}dismissed{{ /status.dismissed }} {{ #status.delegate_to }}delegate-to{{ /status.delegate_to }}">
                                     <span class="citation-title">Citation &#35;{{ citation_id }}</span><br/>
                                     <span class="citation-time">{{ plate_human_time }}</span><br/>
-                                    <a>&#40;{{ plate.coordinates.longitude }}&#44; {{ plate.coordinates.latitude }}&#41;</a><br/>
+                                    <a class="map-coords tiny button secondary" data-open="off-canvas-sidebar" data-longitude="{{ plate.coordinates.longitude }}" data-latitude="{{ plate.coordinates.latitude }}"><i class="fa fa-map-marker"></i>&nbsp;&#40;{{ plate.coordinates.longitude }}&#44; {{ plate.coordinates.latitude }}&#41;</a><br/>
                                 </div>
                                 <hr/>
 
@@ -100,7 +137,7 @@
                                 </div>
                                 {{ /can_delegate_to }}
                             </div>
-                            <div class="column medium-4 statuses">
+                            <div class="column small-12 medium-4 statuses">
                                 {{ #status.verified }}
                                 <div class="small callout success">
                                     <span class="status">This citation has been verified.</span><br/>
@@ -153,8 +190,10 @@
 
     <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vendor/foundation.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/leaflet.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vendor/mustache.min.js') }}"></script>
 
+    <script src="{{ url_for('static', filename='js/citations/mapbox.js') }}"></script>
     <script src="{{ url_for('static', filename='js/citations/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/citations/citations.js') }}"></script>
     <script src="{{ url_for('static', filename='js/citations/app.js') }}"></script>

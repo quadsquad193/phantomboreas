@@ -7,7 +7,7 @@ from flask import request
 import datetime
 
 from phantomboreas.webservice import app, bcrypt, admin_required
-from citations import api_get_citation, api_put_citation, api_get_citations_list
+from citations import api_get_citation, api_put_citation, api_get_citations_list, api_search_citation
 
 
 from flask.ext.security import login_required
@@ -116,3 +116,8 @@ class CitationAPI(MethodView):
 
     def put(self, citation_id):
         return api_put_citation(citation_id)
+
+class SearchAPI(MethodView):
+    decorators = [login_required]
+    def get(self):
+        return api_search_citation()

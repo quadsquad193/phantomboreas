@@ -105,8 +105,50 @@ def api_get_citations_list(timedelta=datetime.timedelta(days=2), since=(datetime
 
     return jsonify({'citations': citations_repr}), 200
 
+def api_search_citation():
+    session = db_session()
+
+    start_datetime      = datetime_option(request.args.get('start_datetime', None))
+    end_datetime        = datetime_option(request.args.get('end_datetime', None))
+    license_plate       = upperstring_option(request.args.get('license_plate', None))
+
+    if not len(filter(lambda x: x is not None, [start_datetime, end_datetime, license_plate])):
+        return jsonify({'success': False, 'message': 'No search parameters found.'}), 400
+
+    q = session.query(CitationLog).\
+        join(CitationLog.plate).\
+        join(PlateLog.capture)
+
+    if start_datetime is not None and end_datetime is not None:
+        q = q.order_by(CaptureLog.timestamp.desc()).\
+            filter(CaptureLog.timestamp.between(start_datetime, end_datetime))
+
+    if license_plate is not None:
+        q = q.from_self().\
+            join(CandidateLog.plate).\
+            filter(CandidateLog.license_plate == license_plate)
+
+    citations = q.all()
+
+    citations_repr = [citation_log_dump(c) for c in citations]
+
+    return jsonify({'citations': citations_repr}), 200
+
 def bool_option(val):
     return True if val == 'true' else False if val == 'false' else None
+
+def datetime_option(val):
+    if val is None or not val: return None
+    dt = None
+    try:
+        dt = datetime.datetime.strptime(val, "%Y-%m-%dT%H:%M")
+    except ValueError:
+        dt = None
+    return dt
+
+def upperstring_option(val):
+    if val is None or not val: return None
+    return str(val).strip().upper()
 
 def citation_log_dump(citation_log):
     return {

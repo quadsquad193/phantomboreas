@@ -42,6 +42,7 @@ Citations = (function() {
     };
 
     Citation.templates = {};
+    Citation.app = undefined;
     Citation.service = undefined;
 
     Citation.prototype.update = function(repr) {
@@ -62,6 +63,7 @@ Citations = (function() {
     };
 
     Citation.prototype.bind = function() {
+        app = Citation.app;
         service = Citation.service;
 
         $('.button.action-verify:first', this.elem).bind('click', {self: this}, function(event) {
@@ -82,6 +84,9 @@ Citations = (function() {
         $('.button.revoke-delegate-to:first', this.elem).bind('click', {self: this}, function(event) {
             service.putCitation(event.data.self.id, 'delegate_to', 0);
         });
+        $('.button.map-coords', this.elem).bind('click', {self: this}, function(event) {
+            app.mapShowCoords(event.data.self.id, parseFloat($(this).attr('data-longitude')), parseFloat($(this).attr('data-latitude')));
+        });
     };
 
     _modules.CitationService = CitationService = function(baseUrl) {
@@ -94,13 +99,34 @@ Citations = (function() {
         this.citations = {};
     };
 
+    CitationService.prototype.responseCitation = function(data) {
+        response_citation = new Citation(data.citation);
+        this.flush();
+        this.citations[response_citation.id] = response_citation;
+    };
+
+    CitationService.prototype.responseCitations = function(data) {
+        response_citations = data.citations;
+        this.flush();
+        for (var i = 0; i < response_citations.length; ++i) {
+            response_citation = new Citation(response_citations[i]);
+            this.citations[response_citation.id] = response_citation;
+        }
+    };
+
+    CitationService.prototype.searchCitations = function(form) {
+        var self = this;
+
+        return $.get(this.baseUrl + 'search', form.serialize(), function(data) {
+            self.responseCitations(data);
+        }, 'json');
+    };
+
     CitationService.prototype.getCitation = function(id) {
         var self = this;
 
         return $.get(this.baseUrl + id, function(data) {
-            response_citation = new Citation(data.citation);
-            self.flush();
-            self.citations[response_citation.id] = response_citation;
+            self.responseCitation(data);
         }, 'json');
     };
 
@@ -108,12 +134,7 @@ Citations = (function() {
         var self = this;
 
         return $.get(this.baseUrl, function(data) {
-            response_citations = data.citations;
-            self.flush();
-            for (var i = 0; i < response_citations.length; ++i) {
-                response_citation = new Citation(response_citations[i]);
-                self.citations[response_citation.id] = response_citation;
-            }
+            self.responseCitations(data);
         }, 'json');
     };
 
@@ -168,11 +189,20 @@ Citations = (function() {
         });
     };
 
-    _modules.CitationApp = CitationApp = function(listContainer, urls, templates, service) {
-        this.container  = listContainer;
-        this.urls       = urls;
-        this.templates  = templates;
-        this.service    = service;
+    _modules.CitationApp = CitationApp = function(listContainer, searchElem, controlElem, mapElem, urls, templates, service) {
+        this.container      = listContainer;
+        this.searchElem     = searchElem;
+        this.controlElem    = controlElem;
+        this.mapElem        = mapElem;
+        this.urls           = urls;
+        this.templates      = templates;
+        this.service        = service;
+    };
+
+    CitationApp.prototype.refresh = function() {
+        this.detach();
+        this.attach();
+        $(document).foundation();
     };
 
     CitationApp.prototype.attach = function() {
@@ -186,7 +216,16 @@ Citations = (function() {
         this.container.empty();
     };
 
+    CitationApp.prototype.search = function() {
+        var self = this;
+
+        this.service.searchCitations(this.searchElem).done(function() {
+            self.refresh();
+        });
+    };
+
     CitationApp.prototype.init = function(id) {
+        Citation.app = this;
         Citation.service = this.service;
 
         Citation.urls = this.urls;
@@ -194,8 +233,75 @@ Citations = (function() {
         Mustache.parse(this.templates.citation);
         Citation.templates.citation = this.templates.citation;
 
+        this.mapSetup();
+        this.bindings();
+
         this.load(id);
     };
+
+    CitationApp.prototype.mapSetup = function() {
+        var self = this;
+
+        self.map = L.map(self.mapElem.attr('id')).setView([0, 0], 1);
+
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            self.map.setView([pos.coords.latitude, pos.coords.longitude], 13);
+        }, function() {
+            console.warn('Could not get geolocation.');
+        });
+
+        L.tileLayer('https://api.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 18,
+            id: mapbox_api.id,
+            accessToken: mapbox_api.accessToken,
+        }).addTo(this.map);
+    };
+
+    CitationApp.prototype.mapShowCoords = function(id, longitude, latitude) {
+        if (this.mapmarker == undefined) {
+            this.mapmarker = L.marker([0, 0], {icon: L.divIcon({className: 'leaflet-map-icon'})}).addTo(this.map);
+            this.mapmarker.bindPopup('<span>Citation Label</span>');
+        }
+
+        this.mapmarker.setLatLng([latitude, longitude]);
+        this.mapmarker.getPopup().setContent('<span>Citation #' + id + '</span>');
+        this.mapmarker.openPopup();
+        this.map.setView([latitude, longitude], 17);
+    }
+
+    CitationApp.prototype.bindings = function() {
+        var self = this;
+
+        $('a#citation-search-submit', this.searchElem).click(function(e) {
+            self.search();
+        });
+
+        $('a#citation-search-reset', this.searchElem).click(function(e) {
+            self.searchElem[0].reset();
+            location.hash = '#';
+        });
+
+        $('a#citation-control-toggle-verified', this.controlElem).click(function(e) {
+            $(this).toggleClass('hollow');
+            self.container.toggleClass('hide-verified');
+        });
+
+        $('a#citation-control-toggle-dismissed', this.controlElem).click(function(e) {
+            $(this).toggleClass('hollow');
+            self.container.toggleClass('hide-dismissed');
+        });
+
+        $('a#citation-control-toggle-delegate-to', this.controlElem).click(function(e) {
+            $(this).toggleClass('hollow');
+            self.container.toggleClass('hide-delegate-to');
+        });
+
+        $('a#citation-control-toggle-evidence', this.controlElem).click(function(e) {
+            $(this).toggleClass('hollow');
+            self.container.toggleClass('hide-evidence');
+        });
+    }
 
     CitationApp.prototype.load = function(id) {
         var self = this;
@@ -206,9 +312,7 @@ Citations = (function() {
         else promise = this.service.getCitation(id);
 
         promise.done(function() {
-            self.detach();
-            self.attach();
-            $(document).foundation();
+            self.refresh();
         });
     };
 
