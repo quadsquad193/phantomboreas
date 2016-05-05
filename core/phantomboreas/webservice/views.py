@@ -14,7 +14,7 @@ from flask.ext.login import login_user, logout_user
 
 from phantomboreas.db.models import Base, CaptureLog, PlateLog, CandidateLog, User
 from phantomboreas.webservice import db_session, bcrypt
-from phantomboreas.webservice.forms import UsernamePasswordForm
+from phantomboreas.webservice.forms import UsernamePasswordForm, RegisterForm
 from flask.ext.security import login_required
 from flask.ext.login import current_user
 import process
@@ -50,7 +50,7 @@ class CitationsView(MethodView):
     decorators = [login_required]
 
     def get(self):
-        return render_template('citations.html'), 200
+        return render_template('citations.html', current_user=current_user), 200
 
 class UserLogoutView(MethodView):
     decorators = [login_required]
@@ -61,16 +61,17 @@ class UserLogoutView(MethodView):
 
 class SigninView(MethodView):
     def get(self):
-        form = UsernamePasswordForm()
+        signin_form = UsernamePasswordForm()
+        register_form = RegisterForm()
 
-        return render_template('signin.html', form=form)
+        return render_template('signin.html', signin_form=signin_form, register_form=register_form)
 
     def post(self):
         session = db_session()
         form = UsernamePasswordForm()
 
         user = session.query(User).filter_by(username=form.username.data).first()
-        if bcrypt.check_password_hash(user.password, form.password.data):
+        if form.validate() and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
 
             return redirect(url_for('index'))

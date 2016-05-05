@@ -1,19 +1,20 @@
-from flask import request, send_from_directory, make_response
+from flask import request, send_from_directory, make_response, redirect, url_for
 from flask.views import MethodView
 
 from flask import jsonify
 from flask import request
+from flask.ext.login import login_user, logout_user
 
 import datetime
 
 from phantomboreas.webservice import app, bcrypt, admin_required
-from citations import api_get_citation, api_put_citation, api_get_citations_list, api_search_citation
-
+from citations import api_get_citation, api_put_citation, api_get_citations_list, api_search_citation, datetime_option
 
 from flask.ext.security import login_required
 
 from phantomboreas.db.models import Base, DroneAuth, User
 from phantomboreas.webservice import db_session
+from phantomboreas.webservice.forms import UsernamePasswordForm, RegisterForm
 
 import types
 
@@ -41,6 +42,22 @@ class DroneAuthAPI(MethodView):
 
 
 
+class RegisterAPI(MethodView):
+	def post(self):
+		session     = db_session()
+		form        = RegisterForm()
+		signin_form = UsernamePasswordForm()
+
+		if form.validate():
+			user = User(username=form.username.data, password=bcrypt.generate_password_hash(form.password.data), is_admin=False)
+			session.add(user)
+			session.commit()
+
+			login_user(user)
+
+			return redirect(url_for('index'))
+
+		return redirect(url_for('signin'))
 
 
 class UserAPI(MethodView):
@@ -106,16 +123,21 @@ class UserAPI(MethodView):
 
 
 class CitationAPI(MethodView):
-    decorators = [login_required]
-    def get(self, citation_id):
+	decorators = [login_required]
+	def get(self, citation_id):
+		try:
+			days_delta = int(request.args.get('days_delta')) if request.args.has_key('days_delta') else 99
+			days_since = int(request.args.get('days_since')) if request.args.has_key('days_since') else 1
+		except ValueError:
+			return '', 400
 
-        if citation_id is None: return api_get_citations_list(timedelta=datetime.timedelta(days=99), since=(datetime.datetime.now() + datetime.timedelta(days=1)))
-        # if citation_id is None: return api_get_citations_list()
+		if citation_id is None: return api_get_citations_list(timedelta=datetime.timedelta(days=days_delta), since=(datetime.datetime.now() + datetime.timedelta(days=days_since)))
+		# if citation_id is None: return api_get_citations_list()
 
-        return api_get_citation(citation_id)
+		return api_get_citation(citation_id)
 
-    def put(self, citation_id):
-        return api_put_citation(citation_id)
+	def put(self, citation_id):
+		return api_put_citation(citation_id)
 
 class SearchAPI(MethodView):
     decorators = [login_required]

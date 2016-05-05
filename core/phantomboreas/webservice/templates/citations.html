@@ -65,8 +65,10 @@
                 </div>
                 <div class="top-bar-right">
                     <ul class="menu">
-                    <li><a>Admin</a></li>
-                    <li><a>Sign Out</a></li>
+                    {% if current_user.is_admin %}
+                        <li><a href="/admin">Admin</a></li>
+                    {% endif %}
+                    <li><a href="/signout">Sign Out</a></li>
                     </ul>
                 </div>
             </div>

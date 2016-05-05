@@ -11,7 +11,7 @@ $(function(){
 						"<tr>" +
 							"<td>" + data.id + "</td>" +
 							"<td>" + data.username + "</td>" +
-							"<td>" + data.is_admin + "</td" +
+							"<td>" + data.is_admin + "</td>" +
 						"</tr>"
 					);
 

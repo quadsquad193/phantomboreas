@@ -22,6 +22,9 @@
     <!-- Plugin CSS -->
     <link rel="stylesheet" href="../static/css/animate.min.css" type="text/css">
 
+    <link rel="stylesheet" href="../static/css/vendor/nv.d3.min.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/vendor/leaflet.css" type="text/css">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/css/creative.css" type="text/css">
 
@@ -59,7 +62,7 @@
                         <a class="page-scroll" href="#services">Services</a>
                     </li> -->
                     <li>
-                        <a class="page-scroll" href="#flight-media">Flight Media</a>
+                        <a class="page-scroll" href="#citation-summary">Summary</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#more-details">More Details</a>
@@ -84,13 +87,30 @@
             <div class="header-content-inner">
                 <h1>Drone Parking Enforcement</h1>
                 <hr>
-                <p>View media stored from Quadcopter flights</p>
-                <a href="#flight-media" class="btn btn-primary btn-xl page-scroll">View Flight Media</a>
+                <p>View weekly citation summary</p>
+                <a href="#citation-summary" class="btn btn-primary btn-xl page-scroll">View Summary</a>
             </div>
         </div>
     </header>
 
-    <section class="no-padding" id="flight-media">
+    <section class="no-padding" id="citation-summary">
+        <aside class="bg-dark">
+            <div class="container text-center">
+                <div class="call-to-action">
+                    <h2>Weekly Citation Summary</h2>
+                    <a href="#" class="btn btn-default btn-xl wow">Back to Home</a>
+                </div>
+            </div>
+        </aside>
+        <div class="container-fluid">
+            <div id="daily-averages-tile" class="col-lg-6">
+            </div>
+            <div id="map-tile" class="col-lg-6">
+            </div>        
+        </div>
+    </section>
+
+<!--     <section class="no-padding" id="flight-media">
         <aside class="bg-dark">
             <div class="container text-center">
                 <div class="call-to-action">
@@ -176,7 +196,7 @@
                 {% endif %}
             </div>
         </ul>
-    </section>
+    </section> -->
 
 
     <section id="more-details">
@@ -210,6 +230,17 @@
     <!-- Custom Theme JavaScript -->
     <script src="../static/js/creative.js"></script>
 
+    <!-- d3 and nvd3 for bar chart in weekly_summary -->
+    <script src="../static/js/vendor/d3.js"></script>
+    <script src="../static/js/vendor/nv.d3.js"></script>
+    <script src="../static/js/vendor/leaflet.js"></script>
+
+    <!-- Page Specific Javascript -->
+    <script src="../static/js/index/utils.js"></script>
+    <script src="../static/js/index/mapbox_api.js"></script>
+    <script src="../static/js/index/weekly_summary.js"></script>
+    <script src="../static/js/index/citation_map.js"></script>
+    <script src="../static/js/index/index.js"></script>
 </body>
 
 </html>

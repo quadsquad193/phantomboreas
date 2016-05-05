@@ -107,14 +107,29 @@
                 {%- endmacro %}
 
                 <div class="col-lg-4 col-lg-offset-4">
-                    <h2 class="login-message text-faded" style="font-weight: 700;">
-                        Login
-                    </h2>
-                    {% call render_form(form, action_url=url_for('signin'), action_text='Login',
-                                                class_='login-form') %}
-                        {{ render_field(form.username, label_visible=false, placeholder='Username', type='text') }}
-                        {{ render_field(form.password, label_visible=false, placeholder='Password', type='password') }}
-                    {% endcall %}
+                    <div id="login-container">
+                        <h2 class="login-message text-faded" style="font-weight: 700;">
+                            Login
+                        </h2>
+                        {% call render_form(form=signin_form, action_url=url_for('signin'), action_text='Login',
+                                                    class_='login-form') %}
+                            {{ render_field(signin_form.username, label_visible=false, placeholder='Username', type='text') }}
+                            {{ render_field(signin_form.password, label_visible=false, placeholder='Password', type='password') }}
+                        {% endcall %}
+                        Not registered? <a id="account-register" href="#">Create an account</a>
+                    </div>
+                    <div id="register-container" style="display: none">
+                        <h2 class="register-message text-faded" style="font-weight: 700;">
+                            Register
+                        </h2>
+                        {% call render_form(form=register_form, action_url=url_for('register'), action_text='Register',
+                                                    class_='register-form') %}
+                            {{ render_field(register_form.username, label_visible=false, placeholder='Username', type='text') }}
+                            {{ render_field(register_form.password, label_visible=false, placeholder='Password', type='password') }}
+                            {{ render_field(register_form.confirm, label_visible=false, placeholder='Verify Password', type='password') }}
+                        {% endcall %}
+                        <a id="account-login" href="#">Back to login</a>      
+                    </div>
                 </div>
             </div>
         </div>
@@ -151,6 +166,8 @@
     <!-- Custom Theme JavaScript -->
     <script src="../static/js/creative.js"></script>
 
+    <!-- Template Specific Javascript -->
+    <script src="../static/js/signin/signin.js"></script>
 </body>
 
 </html>
