@@ -13,66 +13,56 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/citations/citations.css') }}" type="text/css">
 </head>
 
-<body>
-    <div class="min-vh off-canvas-wrapper">
-        <div class="min-vh off-canvas-wrapper-inner" data-off-canvas-wrapper>
-            <div id="off-canvas-sidebar" class="min-vh off-canvas position-left" data-off-canvas>
-                <div class="row sidemap">
-                    <div class="column small-12">
-                        <div id="citation-app-map">
+<body class="no-overflow-y">
+    <div id="main" class="set-viewport-max-width no-overflow-y row">
+        <div id="sidebar" class="column small-4 set-viewport-height scroll-y">
+            <div class="row sidemap">
+                <div class="column small-12">
+                    <div id="citation-app-map">
 
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row sidepanel">
-                    <hr/>
-                    <div class="column small-12 medium-8">
-                        <span class="label">Citation Search</span>
-                        <form id="citation-app-search">
-                            <label>Start Date &amp; Time
-                                <input type="datetime-local" name="start_datetime">
-                            </label>
-                            <label>End Date &amp; Time
-                                <input type="datetime-local" name="end_datetime">
-                            </label>
-                            <label>License Plate
-                                <input type="text" name="license_plate">
-                            </label>
-                            <a id="citation-search-submit" class="tiny button">View</a>
-                            <a id="citation-search-reset" class="tiny button">Reset</a>
-                        </form>
-                    </div>
-                    <div class="column small-12 medium-4">
-                        <span class="label">Show&#47;Hide Items</span>
-                        <ul id="citation-app-controls" class="menu vertical expanded">
-                            <li><a id="citation-control-toggle-verified" class="tiny button success">Verfied</a></li>
-                            <li><a id="citation-control-toggle-dismissed" class="tiny button alert">Dismissed</a></li>
-                            <li><a id="citation-control-toggle-delegate-to" class="tiny button warning">Delegated</a></li>
-                            <li><a id="citation-control-toggle-evidence" class="tiny button secondary">Evidence</a></li>
-                        </ul>
                     </div>
                 </div>
             </div>
 
-            <div id="citation-app-topbar">
-                <div class="top-bar-left">
-                    <a data-toggle="off-canvas-sidebar">
-                        <i class="fa fa-2x fa-caret-left"></i>
-                        <span>&nbsp;</span>
-                        <i class="fa fa-2x fa-search"></i>
-                    </a>
+            <div class="row sidepanel">
+                <hr/>
+                <div class="column small-12 medium-8">
+                    <span class="label">Citation Search</span>
+                    <form id="citation-app-search">
+                        <label>Start Date &amp; Time
+                            <input type="datetime-local" name="start_datetime">
+                        </label>
+                        <label>End Date &amp; Time
+                            <input type="datetime-local" name="end_datetime">
+                        </label>
+                        <label>License Plate
+                            <input type="text" name="license_plate">
+                        </label>
+                        <a id="citation-search-submit" class="tiny button">View</a>
+                        <a id="citation-search-reset" class="tiny button">Reset</a>
+                    </form>
                 </div>
-                <div class="top-bar-right">
-                    <ul class="menu">
-                    <li><a>Admin</a></li>
-                    <li><a>Sign Out</a></li>
+                <div class="column small-12 medium-4">
+                    <span class="label">Show&#47;Hide Items</span>
+                    <ul id="citation-app-controls" class="menu vertical expanded">
+                        <li><a id="citation-control-toggle-verified" class="tiny button success">Verfied</a></li>
+                        <li><a id="citation-control-toggle-dismissed" class="tiny button alert">Dismissed</a></li>
+                        <li><a id="citation-control-toggle-delegate-to" class="tiny button warning">Delegated</a></li>
+                        <li><a id="citation-control-toggle-evidence" class="tiny button secondary">Evidence</a></li>
                     </ul>
                 </div>
             </div>
+        </div>
 
-
-            <div class="row" id="citation-app-container" class="off-canvas-content" data-off-canvas-content>
+        <div id="rightside" class="column small-8 set-viewport-height scroll-y">
+            <div id="citation-app-topbar">
+                <div class="button-group">
+                    <a href="/#citation-summary" class="tiny button secondary">Summary</a>
+                    <a href="/admin" class="tiny button secondary">Admin</a>
+                    <a href="/signout" class="tiny button secondary">Sign Out</a>
+                </div>
+            </div>
+            <div id="citation-app-container">
 
             </div>
         </div>
@@ -92,20 +82,47 @@
                     </div>
                     <div class="column small-12 medium-8">
                         <div class="row">
-                            <div class="column small-12 medium-8 actions">
+                            <div class="column small-12 actions">
                                 <div class="info status-left-border {{ #status.verified }}verified{{ /status.verified }} {{ #status.dismissed }}dismissed{{ /status.dismissed }} {{ #status.delegate_to }}delegate-to{{ /status.delegate_to }}">
                                     <span class="citation-title">Citation &#35;{{ citation_id }}</span><br/>
                                     <span class="citation-time">{{ plate_human_time }}</span><br/>
-                                    <a class="map-coords tiny button secondary" data-open="off-canvas-sidebar" data-longitude="{{ plate.coordinates.longitude }}" data-latitude="{{ plate.coordinates.latitude }}"><i class="fa fa-map-marker"></i>&nbsp;&#40;{{ plate.coordinates.longitude }}&#44; {{ plate.coordinates.latitude }}&#41;</a><br/>
+                                    <a class="map-coords tiny button secondary" data-longitude="{{ plate.coordinates.longitude }}" data-latitude="{{ plate.coordinates.latitude }}"><i class="fa fa-map-marker"></i>&nbsp;&#40;{{ plate.coordinates.longitude }}&#44; {{ plate.coordinates.latitude }}&#41;</a><br/>
                                 </div>
                                 <hr/>
 
+                                {{ #status.verified }}
+                                <div class="small callout success">
+                                    <span class="status">This citation has been verified.</span>
+                                    <a class="button tiny secondary revoke revoke-verify">Revoke Verification</a>
+                                </div>
+                                {{ /status.verified }}
+
+                                {{ #status.dismissed }}
+                                <div class="small callout alert">
+                                    <span class="status">This citation has been dismissed.</span>
+                                    <a class="button tiny secondary revoke revoke-dismiss">Revoke Dismissal</a>
+                                </div>
+                                {{ /status.dismissed }}
+
+                                {{ #status.delegate_to }}
+                                <div class="small callout warning">
+                                    <span>This citation delegates to <a href="#{{ . }}">Citation &#35;{{ . }}</a>.</span>
+                                    <a class="button tiny secondary revoke revoke-delegate-to">Remove Delegationn</a>
+                                </div>
+                                {{ /status.delegate_to }}
+
+                                {{ #status.delegations }}
+                                <div class="small callout secondary">
+                                    <span>This citation has been delegated by <a href="#{{ . }}">Citation &#35;{{ . }}</a>.</span>
+                                </div>
+                                {{ /status.delegations }}
+
                                 {{ ^is_actionable }}
                                 <span class="citation-note">
-                                    This citation is not actionable because
-                                    {{ #status.verified }}it is already verified.{{ /status.verified }}
-                                    {{ #status.dismissed }}it is already dismissed.{{ /status.dismissed }}
-                                    {{ #status.delegate_to }}it delegates to another citation.{{ /status.delegate_to }}
+                                    This citation is not actionable because...
+                                    {{ #status.verified }}<br/>... it is already verified.{{ /status.verified }}
+                                    {{ #status.dismissed }}<br/>... it is already dismissed.{{ /status.dismissed }}
+                                    {{ #status.delegate_to }}<br/>... it delegates to another citation.{{ /status.delegate_to }}
                                 </span><br/>
                                 {{ /is_actionable }}
 
@@ -116,11 +133,11 @@
 
                                 {{ ^can_delegate_to }}
                                 <span class="citation-note">
-                                    This citation cannot delegate to another citation because
-                                    {{ #status.verified }}it is already verified.{{ /status.verified }}
-                                    {{ #status.dismissed }}it is already dismissed.{{ /status.dismissed }}
-                                    {{ #status.delegate_to }}it already delegates.{{ /status.delegate_to }}
-                                    {{ #status.delegations }}it must serve as a delegate itself.{{ /status.delegations }}
+                                    This citation cannot delegate to another citation because...
+                                    {{ #status.verified }}<br/>... it is already verified.{{ /status.verified }}
+                                    {{ #status.dismissed }}<br/>... it is already dismissed.{{ /status.dismissed }}
+                                    {{ #status.delegate_to }}<br/>... it already delegates.{{ /status.delegate_to }}
+                                    {{ #has_delegations }}<br/>... it must serve as a delegate itself.{{ /has_delegations }}
                                 </span><br/>
                                 {{ /can_delegate_to }}
 
@@ -136,37 +153,6 @@
                                     </div>
                                 </div>
                                 {{ /can_delegate_to }}
-                            </div>
-                            <div class="column small-12 medium-4 statuses">
-                                {{ #status.verified }}
-                                <div class="small callout success">
-                                    <span class="status">This citation has been verified.</span><br/>
-                                    <hr/>
-                                    <a class="button tiny revoke-verify">Revoke Verification</a>
-                                </div>
-                                {{ /status.verified }}
-
-                                {{ #status.dismissed }}
-                                <div class="small callout alert">
-                                    <span class="status">This citation has been dismissed.</span><br/>
-                                    <hr/>
-                                    <a class="button tiny revoke-dismiss">Revoke Dismissal</a>
-                                </div>
-                                {{ /status.dismissed }}
-
-                                {{ #status.delegate_to }}
-                                <div class="small callout warning">
-                                    <span>This citation delegates to <a href="#{{ . }}">Citation &#35;{{ . }}</a>.</span><br/>
-                                    <hr/>
-                                    <a class="button tiny revoke-delegate-to">Remove Delegationn</a>
-                                </div>
-                                {{ /status.delegate_to }}
-
-                                {{ #status.delegations }}
-                                <div class="small callout secondary">
-                                    <span>This citation has been delegated by <a href="#{{ . }}">Citation &#35;{{ . }}</a>.</span>
-                                </div>
-                                {{ /status.delegations }}
                             </div>
                         </div>
                     </div>

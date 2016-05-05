@@ -31,7 +31,11 @@ Citations = (function() {
 
     CitationRepr.prototype.can_delegate_to = function() {
         return !this.status.delegations.length && this.is_actionable();
-    }
+    };
+
+    CitationRepr.prototype.has_delegations = function() {
+        return this.status.delegations.length > 0;
+    };
 
     _modules.Citation = Citation = function(repr) {
         this.repr   = new CitationRepr(repr);
