@@ -38,12 +38,39 @@ Utils = (function() {
         return human_date(Math.floor(y.getTime() / 1000) + (x*24*60*60));
     };
 
+    var day_of_week = function(timestamp) {
+        var weekday = new Array(7);
+
+        weekday[0]=  "Sunday";
+        weekday[1] = "Monday";
+        weekday[2] = "Tuesday";
+        weekday[3] = "Wednesday";
+        weekday[4] = "Thursday";
+        weekday[5] = "Friday";
+        weekday[6] = "Saturday";
+
+        var date = new Date(timestamp * 1000);
+
+        return weekday[date.getDay()];
+    }
+
+    var weeks_elapsed = function(timestamps) {
+        var minTime = Math.min.apply(null, timestamps), 
+            maxTime = Math.max.apply(null, timestamps);
+
+        console.log(timestamps, maxTime, minTime);
+
+        return Math.ceil((maxTime - minTime) / (60*60*24*7));
+    }
+
     return {
         time: {
             human_timestamp: human_timestamp,
             midnight_x_days_ago: midnight_x_days_ago,
             human_date: human_date,
             date_x_days_from_y: date_x_days_from_y,
+            day_of_week: day_of_week,
+            weeks_elapsed: weeks_elapsed
         }
     };
 })();

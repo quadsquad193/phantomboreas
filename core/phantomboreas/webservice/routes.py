@@ -25,6 +25,9 @@ citation_api_view   = login_required(api.CitationAPI.as_view('citation'))
 search_api_view     = login_required(api.SearchAPI.as_view('search'))
 citations_view      = login_required(views.CitationsView.as_view('citations'))
 
+summary_view = login_required(views.SummaryView.as_view('summary'))
+app.add_url_rule('/summary', view_func=summary_view)
+
 app.add_url_rule('/api/citation/search/', view_func=search_api_view)
 app.add_url_rule('/api/citation/', defaults={'citation_id': None}, methods=['GET'], view_func=citation_api_view)
 app.add_url_rule('/api/citation/<int:citation_id>', methods=['GET', 'PUT'], view_func=citation_api_view)

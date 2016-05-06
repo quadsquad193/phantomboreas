@@ -17,7 +17,7 @@ CitationMap = (function() {
         self.map = L.map(self.mapElem.attr('id')).setView([0, 0], 1);
 
         navigator.geolocation.getCurrentPosition(function(pos) {
-            self.map.setView([pos.coords.latitude, pos.coords.longitude], 12);
+            self.map.setView([pos.coords.latitude, pos.coords.longitude]);
         }, function() {
             console.warn('Could not get geolocation.');
         });
@@ -48,12 +48,9 @@ CitationMap = (function() {
 	        if (self.mapmarkers.length < (i+1)) {
 	            self.mapmarkers.push(L.marker([0, 0]))
 	            self.mapmarkers[i].addTo(self.map);
-	            self.mapmarkers[i].bindPopup('<span>Citation Label</span>');
 	        }
 
 	        self.mapmarkers[i].setLatLng([d.evidence[0].coordinates.latitude, d.evidence[0].coordinates.longitude]);
-	        self.mapmarkers[i].getPopup().setContent('<span>Citation #' + d.citation_id + '</span>');
-	        self.mapmarkers[i].openPopup();
 	    });
     }
 

@@ -79,6 +79,11 @@ class SigninView(MethodView):
             return redirect(url_for('signin'))
 
 
+class SummaryView(MethodView):
+    decorators = [login_required]
+    def get(self):
+        return render_template('summary.html', current_user=current_user)
+
 class AdminView(MethodView):
     decorators = [login_required, admin_required]
     def get(self):
