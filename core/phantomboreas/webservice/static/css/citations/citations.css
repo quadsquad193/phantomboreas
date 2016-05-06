@@ -7,6 +7,23 @@ body, h1, h2, h3, h4, h5, h6 {
     font-family: 'Lato', sans-serif;
 }
 
+div#rightside {
+    position: relative;
+}
+
+div#citation-app-topbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    padding-right: 2em;
+    height: 2em;
+}
+
+div#citation-app-container {
+    margin-top: 2em;
+}
+
 div.row.citation {
     padding-top: 0.5em;
     padding-bottom: 1.5em;
@@ -14,8 +31,21 @@ div.row.citation {
     overflow: none;
 }
 
-div.min-vh {
-    min-height: 100vh;
+body.no-overflow-y, div.no-overflow-y {
+    overflow-y: hidden;
+}
+
+div.scroll-y {
+    overflow-y: scroll;
+}
+
+div.set-viewport-max-width {
+    height: 100vh;
+    max-width: 100vw;
+}
+
+div.set-viewport-height {
+    height: 100vh;
 }
 
 div.info {
@@ -81,17 +111,8 @@ span.license-plate-text {
     font-size: 0.8em;
 }
 
-div.off-canvas {
+div#sidebar {
     background-color: #102728;
-}
-
-div.off-canvas.position-left {
-    left: -34vw;
-    width: 34vw;
-}
-
-div.off-canvas-wrapper-inner.is-open-left {
-    transform: translateX(34vw);
 }
 
 div.sidepanel {
@@ -108,6 +129,14 @@ form#citation-app-search label {
 
 ul#citation-app-controls a.button {
     margin-top: 0.25em;
+}
+
+a.button.revoke {
+    float: right;
+}
+
+div.small.callout {
+    font-size: 0.8em;
 }
 
 div#citation-app-container.hide-verified div.citation.hideable.verified {
