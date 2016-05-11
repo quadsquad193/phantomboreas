@@ -11,6 +11,14 @@ div#rightside {
     position: relative;
 }
 
+div#main {
+    margin-top: 51px;
+
+    height: -webkit-calc(100vh - 51px);
+    height: -moz-calc(100vh - 51px);
+    height: calc(100vh - 51px);
+}
+
 div#citation-app-topbar {
     position: absolute;
     top: 0;
@@ -18,10 +26,6 @@ div#citation-app-topbar {
 
     padding-right: 2em;
     height: 2em;
-}
-
-div#citation-app-container {
-    margin-top: 2em;
 }
 
 div.row.citation {
@@ -67,6 +71,14 @@ div.info.status-left-border.dismissed {
 div.info.status-left-border.delegate-to {
     border-left: 4px solid orange;
 }
+
+/*#citation-app-controls a:not(.hollow) {
+    background-color: #f05f40;
+}
+
+#citation-app-controls a {
+    border-color: #f05f40;
+}*/
 
 div.row.citation div.row.evidence {
     margin-top: 2em;
@@ -133,6 +145,7 @@ ul#citation-app-controls a.button {
 
 a.button.revoke {
     float: right;
+    margin-top: -0.5em;
 }
 
 div.small.callout {

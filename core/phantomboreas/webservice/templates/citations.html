@@ -9,11 +9,15 @@
     <link href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/fonts/fontawesome-webfont.woff' rel='stylesheet' type='text/css'>
     <link href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/foundation.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/leaflet.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/citations/citations.css') }}" type="text/css">
 </head>
 
 <body class="no-overflow-y">
+    {% from "partials/navbar.html" import navbar %}
+    {{ navbar(admin=current_user.is_admin, logged_in=True) }}
+
     <div id="main" class="set-viewport-max-width no-overflow-y row">
         <div id="sidebar" class="column small-4 set-viewport-height scroll-y">
             <div class="row sidemap">
@@ -46,26 +50,16 @@
                 <div class="column small-12 medium-4">
                     <span class="label">Show&#47;Hide Items</span>
                     <ul id="citation-app-controls" class="menu vertical expanded">
-                        <li><a id="citation-control-toggle-verified" class="tiny button success">Verfied</a></li>
-                        <li><a id="citation-control-toggle-dismissed" class="tiny button alert">Dismissed</a></li>
-                        <li><a id="citation-control-toggle-delegate-to" class="tiny button warning">Delegated</a></li>
-                        <li><a id="citation-control-toggle-evidence" class="tiny button secondary">Evidence</a></li>
+                        <li><a id="citation-control-toggle-verified" class="button success">Verfied</a></li>
+                        <li><a id="citation-control-toggle-dismissed" class="button success">Dismissed</a></li>
+                        <li><a id="citation-control-toggle-delegate-to" class="button success">Delegated</a></li>
+                        <li><a id="citation-control-toggle-evidence" class="button success">Evidence</a></li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <div id="rightside" class="column small-8 set-viewport-height scroll-y">
-            <div id="citation-app-topbar">
-                <div class="button-group">
-                    <a href="/" class="tiny button secondary">Home</a>
-                    <a href="/summary" class="tiny button secondary">Summary</a>
-                    {% if current_user.is_admin %}
-                        <a href="/admin" class="tiny button secondary">Admin</a>
-                    {% endif %}
-                    <a href="/signout" class="tiny button secondary">Sign Out</a>
-                </div>
-            </div>
             <div id="citation-app-container">
 
             </div>
