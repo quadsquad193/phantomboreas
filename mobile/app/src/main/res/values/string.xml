@@ -3,8 +3,11 @@
     <string name="app_name">Parking Monitor</string>
     <string name="package_name">com.shronas.parkingpatrol</string>
     <string name="action_settings">Settings</string>
+
     <string name="disconnected">DJI Phantom Disconnected</string>
     <string name="camera_disconnected">DJI Phantom Camera Not Responding</string>
+
+    <string name="capture_desc">Take Photo Button</string>
 
     <string name="capture_dir">/Parking_Enforcement/DJI_Plate_Captures/</string>
     <string name="token_dir">/Parking_Enforcement/config/</string>

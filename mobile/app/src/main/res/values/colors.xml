@@ -7,8 +7,8 @@
 
     <color name="colorPrimary">#125688</color>
     <color name="colorPrimaryDark">#125688</color>
-    <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#c8e8ff</color>
+    <color name="navigationBarColor">#000000</color>
     <color name="gray_overlay">#66000000</color>
     <color name="grayBack">#bbbbbb</color>
     <color name="white">#ffffff</color>
