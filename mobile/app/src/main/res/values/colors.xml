@@ -11,4 +11,5 @@
     <color name="colorAccent">#c8e8ff</color>
     <color name="gray_overlay">#66000000</color>
     <color name="grayBack">#bbbbbb</color>
+    <color name="white">#ffffff</color>
 </resources>

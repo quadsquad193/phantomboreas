@@ -100,7 +100,8 @@ public class GalleryGridAdapter extends RecyclerView.Adapter<GalleryGridAdapter.
                 .load(file)
                 .resize(512, 512)
                 .centerCrop()
-                .placeholder(R.drawable.loading).into(mImage);
+                .placeholder(R.drawable.white)
+                .into(mImage);
 
         ExifInterface intf = null;
         String dateString, dateFormat = "", timeFormat = "";
