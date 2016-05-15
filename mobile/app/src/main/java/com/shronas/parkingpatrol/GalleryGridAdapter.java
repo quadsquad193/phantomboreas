@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,8 +70,14 @@ public class GalleryGridAdapter extends RecyclerView.Adapter<GalleryGridAdapter.
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.gallery_image, parent, false);
+
+        ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
+        layoutParams.height = layoutParams.width;
+        v.setLayoutParams(layoutParams);
+
         // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);
+
         return vh;
     }
 
@@ -80,6 +87,7 @@ public class GalleryGridAdapter extends RecyclerView.Adapter<GalleryGridAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         this.holder = holder;
         this.position = position;
+
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         ImageView mImage = (ImageView) holder.mItemView.findViewById(R.id.image);
@@ -109,7 +117,7 @@ public class GalleryGridAdapter extends RecyclerView.Adapter<GalleryGridAdapter.
 
             simpleDateFormat = new SimpleDateFormat("yyyy:mm:dd hh:mm:ss");
             convertDate = new SimpleDateFormat("MMM dd, yyyy");
-            convertTime = new SimpleDateFormat("hh:mm aa");
+            convertTime = new SimpleDateFormat("h:mm aa");
 
             Date d = null, d2 = null;
 

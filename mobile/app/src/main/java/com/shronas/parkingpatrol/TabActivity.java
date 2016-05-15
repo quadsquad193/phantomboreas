@@ -23,10 +23,7 @@ public class TabActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private int[] tabIcons = {
-            R.drawable.gallery_dark,
-            R.drawable.gallery
-    };
+    private int[] tabIcons = {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
