@@ -1,6 +1,7 @@
 package com.shronas.parkingpatrol;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,7 +16,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Created by Shronas on 2/23/16.
@@ -26,8 +26,8 @@ import java.util.ArrayList;
  * Timestamp of when image was captured
  */
 
-public class UploadAsyncTask extends AsyncTask<Uploadable, Void, Void> {
-    private final String LOG_TAG = UploadAsyncTask.class.getSimpleName();
+public class uploadAsync extends AsyncTask<Uploadable, Void, Void> {
+    private final String LOG_TAG = uploadAsync.class.getSimpleName();
     private Context context;
 
     String lineEnd = "\r\n";
@@ -35,14 +35,23 @@ public class UploadAsyncTask extends AsyncTask<Uploadable, Void, Void> {
     String boundary = "fae6ba7e-ab3b-4696-90de-d52de8f11947";
     HttpURLConnection urlConnection = null;
     DataOutputStream dos = null;
-    final String TAG = "UploadAsyncTask";
+    final String TAG = "uploadAsync";
 
-    public UploadAsyncTask(Context context) {
+    public uploadAsync(Context context) {
         this.context = context;
-    } // UploadAsyncTask()
+    } // uploadAsync()
 
 
     protected void onPreExecute() {
+        SharedPreferences prefs = context.getSharedPreferences(
+                TabActivity.PACKAGE_NAME, Context.MODE_PRIVATE);
+
+        getTokenAsync getTokenTask = new getTokenAsync(context);
+
+        // if token doesn't already exist or it is empty
+        if (!prefs.contains("token") || prefs.getString("token", "").isEmpty())
+            getTokenTask.execute();
+
         Toast.makeText(context, "Uploading image ...", Toast.LENGTH_SHORT).show();
     } // onPreExecute()
 
@@ -95,17 +104,21 @@ public class UploadAsyncTask extends AsyncTask<Uploadable, Void, Void> {
 
     /* Setup HTTPUrlConnection */
     private void setupConnection(String filepath) throws IOException {
-        //URL url = new URL("http://taglab3.genomecenter.ucdavis.edu/hri/api/active/");
-        URL url = new URL("http://10.42.0.1:8000/droneimages");
-        //URL url = new URL("http://requestb.in/12482fb1");
+        URL url = new URL(context.getString(R.string.upload_pic_url));
+
+        SharedPreferences prefs = context.getSharedPreferences(
+                TabActivity.PACKAGE_NAME, Context.MODE_PRIVATE);
+        String token = prefs.getString("token", "");
+
+        Log.d(TAG, token);
+
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setDoInput(true); // Allow Inputs
         urlConnection.setDoOutput(true); // Allow Outputs
         urlConnection.setUseCaches(false); // Don't use a Cached Copy
         urlConnection.setRequestMethod("POST");
         urlConnection.setRequestProperty("Connection", "Keep-Alive");
-        //urlConnection.setChunkedStreamingMode(0); // don't buffer to preserver heap space.
-
+        urlConnection.setRequestProperty("Cookie", token);
         urlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
         urlConnection.setRequestProperty("image", filepath);
         urlConnection.setRequestProperty("Content-Language", "en-US");
@@ -117,9 +130,12 @@ public class UploadAsyncTask extends AsyncTask<Uploadable, Void, Void> {
 
     /* Close streams and URL connection */
     private void closeConnection() throws IOException {
-        dos.flush();
-        dos.close();
-        urlConnection.disconnect();
+        if (null != dos) {
+            dos.flush();
+            dos.close();
+        }
+        if (null != urlConnection)
+            urlConnection.disconnect();
     } // closeConnection()
 
 
@@ -203,4 +219,4 @@ public class UploadAsyncTask extends AsyncTask<Uploadable, Void, Void> {
 
         return response.toString();
     } // handleResponse()
-} // class UploadAsyncTask
+} // class uploadAsync

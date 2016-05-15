@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import java.io.File;
@@ -22,10 +23,12 @@ import dji.sdk.base.DJIError;
 public class MediaManager {
     private DJIMediaManager mMediaManager = null;
     Activity mActivity;
+    Fragment returnFragment;
 
-    MediaManager(DJIMediaManager mMediaManager, Activity mActivity) {
+    MediaManager(DJIMediaManager mMediaManager, Fragment returnFragment, Activity mActivity) {
         this.mMediaManager = mMediaManager;
         this.mActivity = mActivity;
+        this.returnFragment = returnFragment;
     } // constructor MediaManager()
 
 
@@ -35,6 +38,11 @@ public class MediaManager {
 
 
     void fetchList() {
+        if (!isMediaManagerAvailable()) {
+            showToast("Media Manager Not Available");
+            return;
+        }
+
         mMediaManager.setCameraModeMediaDownload(
                 new DJIBaseComponent.DJICompletionCallback() {
                     @Override
@@ -77,7 +85,7 @@ public class MediaManager {
 
                     @Override
                     public void onSuccess(ArrayList<DJIMedia> data) {
-                        showToast("fetchMediaList success");
+                        //showToast("fetchMediaList success");
                         downloadImage(data);
                     } // onSuccess()
                 }); // fetchMediaList()
@@ -86,6 +94,9 @@ public class MediaManager {
 
 
     protected void downloadImage(ArrayList<DJIMedia> data) {
+        if (null == data || 0 >= data.size() || null == mActivity)
+            return;
+
         int image_index = data.size() - 1;
         DJIMedia image = data.get(image_index);
         String filename = image.getFileName();
@@ -98,9 +109,9 @@ public class MediaManager {
             filename = filename.substring(0, pos);
 
         File destDir = new File(Environment.getExternalStorageDirectory().
-                getAbsolutePath() + "/DJI_SPALSH/");
+                getAbsolutePath() + mActivity.getString(R.string.capture_dir));
 
-        final File destDir2 = destDir;
+        //final File destDir2 = destDir;
 
         image.fetchMediaData(destDir, filename,
                 new DJIMediaManager.CameraDownloadListener<String>() {
@@ -109,6 +120,7 @@ public class MediaManager {
                     public void onFailure(DJIError error) {
                         Message message = Message.obtain();
                         message.obj = error.toString();
+                        mMediaManager.exitMediaDownloading();
                         //messageHandler.sendMessage(message);
                     } // onFailure()
 
@@ -135,11 +147,14 @@ public class MediaManager {
                         showToast("image download success");
                         mMediaManager.exitMediaDownloading();
 
+                        if (null == mActivity)
+                            return;
+
                         String destDirectory = Environment.getExternalStorageDirectory().
-                                getAbsolutePath() + "/DJI_SPALSH/";
+                                getAbsolutePath() + mActivity.getString(R.string.capture_dir);
                         mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + destDirectory)));
 
-                        ((MainActivity) mActivity).postDownload(destDirectory + test_filename);
+                        ((StreamFragment) returnFragment).postDownload(destDirectory + test_filename);
                     } // onSuccess()
                 }); // fetchMediaList()
     } // downloadImage()

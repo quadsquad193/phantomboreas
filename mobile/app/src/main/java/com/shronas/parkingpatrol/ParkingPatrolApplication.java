@@ -43,6 +43,7 @@ public class ParkingPatrolApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         mHandler = new Handler(Looper.getMainLooper());
         //This is used to start SDK services and initiate SDK.
         DJISDKManager.getInstance().initSDKManager(this, mDJISDKManagerCallback);
@@ -64,7 +65,7 @@ public class ParkingPatrolApplication extends Application {
 
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "register sdk success", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "register sdk success", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -75,7 +76,7 @@ public class ParkingPatrolApplication extends Application {
 
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "register sdk fails, check network is available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "register sdk fails, check network is available", Toast.LENGTH_SHORT).show();
                     }
                 });
 

@@ -8,7 +8,7 @@
         android:id="@+id/main_title_rl"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:background="@color/black_overlay" >
+        android:background="@color/gray_overlay" >
 
         <ImageButton
             android:id="@+id/ReturnBtnCamera"
@@ -31,6 +31,19 @@
             android:text=""
             android:textColor="@android:color/white"
             android:textSize="21sp" />
+
+        <ImageButton
+            android:id="@+id/Gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:onClick="showGallery"
+            android:scaleType="centerInside"
+            android:src="@drawable/gallery" />
     </RelativeLayout>
     
     <TextureView
@@ -40,8 +53,27 @@
         android:layout_below="@id/main_title_rl"
         android:layout_centerInParent="true"
         android:layout_gravity="center" />
-    
-     <LinearLayout 
+
+<!--    <View
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="0dp"
+        android:layout_alignParentBottom="true"/>-->
+        <!--android:background="#afffffff"-->
+
+
+    <ImageButton
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/camera"
+        android:padding="5dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"/>
+
+<!--     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
@@ -52,7 +84,7 @@
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
         android:layout_height="wrap_content"
-        android:text="Capture" 
+        android:text="Capture"
         android:textSize="12sp"/>
 
     <Button
@@ -61,16 +93,16 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="Record" 
+        android:text="Record"
         android:textSize="12sp"/>
-     
+
     <Button
         android:id="@+id/button3"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="Stop recording" 
+        android:text="Stop recording"
         android:textSize="12sp"/>
     <TextView
         android:id="@+id/timer"
@@ -78,6 +110,6 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"/>
-  </LinearLayout>
+  </LinearLayout>-->
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package com.shronas.parkingpatrol;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,161 +18,93 @@ import dji.sdk.base.DJIError;
 public class Camera {
     private DJICamera mCamera = null;
     private MediaManager mMediaManager;
+    Fragment returnFragment;
     Activity mActivity;
 
-    private int i = 0;
-    private int TIME = 1000;
+/*    private int i = 0;
+    private int TIME = 1000;*/
 
-    Camera(DJICamera mCamera, Activity mActivity) {
+    Camera(DJICamera mCamera, Fragment returnFragment, Activity mActivity) {
         this.mActivity = mActivity;
+        this.returnFragment = returnFragment;
         this.mCamera = mCamera;
     } // Camera()
+
+
+    void setDownloadMode() {
+        if (null != mCamera) {
+            mCamera.setCameraMode(
+                    DJICameraSettingsDef.CameraMode.MediaDownload,
+                    new DJIBaseComponent.DJICompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                        }
+                    } // callback
+            ); // setCameraMode()
+        }
+    } // setDownloadMode()
+
+
+    void capturePhoto() {
+        if (null != mCamera) {
+            DJICameraSettingsDef.CameraMode cameraMode = DJICameraSettingsDef.CameraMode.ShootPhoto;
+            mCamera.setCameraMode(cameraMode, new DJIBaseComponent.DJICompletionCallback() {
+                @Override
+                public void onResult(DJIError error) {
+                    if (error == null) {
+                        DJICameraSettingsDef.CameraShootPhotoMode photoMode = DJICameraSettingsDef.CameraShootPhotoMode.Single; // Set the camera capture mode as Single mode
+
+                        mCamera.startShootPhoto(photoMode, new DJIBaseComponent.DJICompletionCallback() {
+                            @Override
+                            public void onResult(DJIError error) {
+                                if (error == null) {
+                                    if (mActivity == null)
+                                        Log.d("take photo", "success");
+                                    else
+                                        showToast("take photo: success");
+                                    downloadImage();
+                                } else {
+                                    if (mActivity == null)
+                                        Log.d("photo shoot error", error.getDescription());
+                                    else
+                                        showToast(error.getDescription());
+                                }
+                            }
+                        }); // Execute the startShootPhoto API
+                    } else {
+                        if (mActivity == null)
+                            Log.d("set camera error", error.getDescription());
+                        else
+                            showToast(error.getDescription());
+                    }
+                }
+            });
+        }
+    } // capturePhoto();
 
 
     /**
      * Before the download commands are sent to the aircraft, the camera work mode should be set
      * to download mode.
      */
-    protected void setupCamera() {
+    protected void downloadImage() {
         setDownloadMode();
 
         if (mCamera != null)
-            mMediaManager = new MediaManager(mCamera.getMediaManager(), mActivity);
+            mMediaManager = new MediaManager(mCamera.getMediaManager(), returnFragment, mActivity);
         else
-            Log.d("setupCamera", "camera null");
+            Log.d("downloadImage", "camera null");
 
         if (mMediaManager.isMediaManagerAvailable()) {
-            mMediaManager.fetchList();
+            mMediaManager.fetchList(); // trigger media manager to download image
         } else {
             if(mActivity == null)
                 Log.d("In Download", "Media Download not available");
             else
                 showToast("In Download: Media Download not available");
         }
-    } // setupCamera()
+    } // downloadImage()
 
-
-    void setDownloadMode() {
-        mCamera.setCameraMode(
-                DJICameraSettingsDef.CameraMode.MediaDownload,
-                new DJIBaseComponent.DJICompletionCallback() {
-                    @Override
-                    public void onResult(DJIError djiError) {}
-                } // callback
-        ); // setCameraMode()
-    } // setDownloadMode()
-
-
-    void capturePhoto() {
-        DJICameraSettingsDef.CameraMode cameraMode = DJICameraSettingsDef.CameraMode.ShootPhoto;
-        mCamera.setCameraMode(cameraMode, new DJIBaseComponent.DJICompletionCallback() {
-            @Override
-            public void onResult(DJIError error) {
-                if (error == null) {
-                    DJICameraSettingsDef.CameraShootPhotoMode photoMode = DJICameraSettingsDef.CameraShootPhotoMode.Single; // Set the camera capture mode as Single mode
-
-                    mCamera.startShootPhoto(photoMode, new DJIBaseComponent.DJICompletionCallback() {
-                        @Override
-                        public void onResult(DJIError error) {
-                            if (error == null) {
-                                if(mActivity == null)
-                                    Log.d("take photo", "success");
-                                else
-                                    showToast("take photo: success");
-                                setupCamera();
-                            } else {
-                                if(mActivity == null)
-                                    Log.d("photo shoot error", error.getDescription());
-                                else
-                                    showToast(error.getDescription());
-                            }
-                        }
-                    }); // Execute the startShootPhoto API
-                } else {
-                    if(mActivity == null)
-                        Log.d("set camera error", error.getDescription());
-                    else
-                        showToast(error.getDescription());
-                }
-            }
-        });
-    } // capturePhoto();
-
-
-    void record() {
-        DJICameraSettingsDef.CameraMode cameraMode = DJICameraSettingsDef.CameraMode.RecordVideo;
-
-        mCamera.setCameraMode(cameraMode, new DJIBaseComponent.DJICompletionCallback() {
-
-            @Override
-            public void onResult(DJIError error) {
-                if (error == null) {
-                    mCamera.startRecordVideo(new DJIBaseComponent.DJICompletionCallback() {
-
-                        @Override
-                        public void onResult(DJIError error) {
-                            if (error == null) {
-                                if(mActivity == null)
-                                    Log.d("Record Video", "success");
-                                else
-                                    showToast("Record video: success");
-                                //handlerTimer.postDelayed(runnable, TIME); // Start the timer for recording
-                            } else {
-                                if(mActivity == null)
-                                    Log.d("video record error", error.getDescription());
-                                else
-                                    showToast(error.getDescription());
-                            }
-                        }
-
-                    }); // Execute the startShootPhoto API
-                } else {
-                    if(mActivity == null)
-                        Log.d("set video record mode", error.getDescription());
-                    else
-                        showToast(error.getDescription());
-                }
-            }
-        });
-    } // record()
-
-
-    private Handler handlerTimer = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            // handler自带方法实现定时器
-            try {
-                handlerTimer.postDelayed(this, TIME);
-                //viewTimer.setText(Integer.toString(i++));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    void stopRecord() {
-        mCamera.stopRecordVideo(new DJIBaseComponent.DJICompletionCallback() {
-
-            @Override
-            public void onResult(DJIError error) {
-                if (error == null) {
-                    if(mActivity == null)
-                        Log.d("Stop recording", "success");
-                    else
-                        showToast("Stop recording: success");
-                } else {
-                    if(mActivity == null)
-                        Log.d("stop recording error", error.getDescription());
-                    else
-                        showToast(error.getDescription());
-                }
-                handlerTimer.removeCallbacks(runnable); // Start the timer for recording
-                // i = 0; // Reset the timer for recording
-            }
-
-        });
-    } // stopRecord()
 
 
     public void showToast(final String msg) {
