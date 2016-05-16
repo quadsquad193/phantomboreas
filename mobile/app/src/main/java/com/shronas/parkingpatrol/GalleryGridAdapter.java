@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -41,7 +43,6 @@ public class GalleryGridAdapter extends RecyclerView.Adapter<GalleryGridAdapter.
 
     ViewHolder holder;
     int position;
-
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -70,10 +71,6 @@ public class GalleryGridAdapter extends RecyclerView.Adapter<GalleryGridAdapter.
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.gallery_image, parent, false);
-
-        ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
-        layoutParams.height = layoutParams.width;
-        v.setLayoutParams(layoutParams);
 
         // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);

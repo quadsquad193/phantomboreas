@@ -358,14 +358,6 @@ public class StreamFragment extends Fragment implements TextureView.SurfaceTextu
                 mProductEncapsulated.capturePhoto();
                 break;
             }
-/*            case R.id.button2: {
-                mProductEncapsulated.record();
-                break;
-            }
-            case R.id.button3: {
-                mProductEncapsulated.stopRecord();
-                break;
-            }*/
             default:
                 break;
         }
