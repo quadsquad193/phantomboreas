@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Please rename this file from api_keys.xml.template to api_keys.xml to and
+     add your DJI API key.
+
+     Please uncomment the commented code below. 
+-->
+
+<resources>
+    <!-- 
+    <string name="dji_key">REPLACE_WITH_DJI_KEY</string>
+    -->
+</resources>

@@ -1,0 +1,1 @@
+include ':app', ':DJI-SDK-LIB'
