@@ -225,6 +225,8 @@ Citations = (function() {
 
         this.service.searchCitations(this.searchElem).done(function() {
             self.refresh();
+        }).fail(function(response) {
+            alert(response.responseJSON.message);
         });
     };
 
@@ -283,7 +285,43 @@ Citations = (function() {
 
         $('a#citation-search-reset', this.searchElem).click(function(e) {
             self.searchElem[0].reset();
+            $('input[type=datetime-local]', this.searchElem).removeClass('bad-input not-paired');
+            $('span.error', this.searchElem).removeClass('show');
             location.hash = '#';
+        });
+
+        $('input[type=datetime-local]', this.searchElem).keyup(function(e) {
+            if ($(this)[0].validity.badInput) {
+                $(this).addClass('bad-input');
+                $(this).siblings('span.error.bad-input').addClass('show');
+            } else {
+                $(this).removeClass('bad-input');
+                $(this).siblings('span.error.bad-input').removeClass('show');
+            }
+        });
+
+        $('input[type=datetime-local][name=start_datetime]', this.searchElem).keyup(function(e) {
+            if (!$('input[type=datetime-local][name=end_datetime]', this.searchElem)[0].value) {
+                $('input[type=datetime-local][name=end_datetime]', this.searchElem).addClass('not-paired');
+                $('input[type=datetime-local][name=end_datetime]', this.searchElem).siblings('span.error.not-paired').addClass('show');
+            }
+
+            if ($(this)[0].value) {
+                $(this).removeClass('not-paired');
+                $(this).siblings('span.error.not-paired').removeClass('show');
+            }
+        });
+
+        $('input[type=datetime-local][name=end_datetime]', this.searchElem).keyup(function(e) {
+            if (!$('input[type=datetime-local][name=start_datetime]', this.searchElem)[0].value) {
+                $('input[type=datetime-local][name=start_datetime]', this.searchElem).addClass('not-paired');
+                $('input[type=datetime-local][name=start_datetime]', this.searchElem).siblings('span.error.not-paired').addClass('show');
+            }
+
+            if ($(this)[0].value) {
+                $(this).removeClass('not-paired');
+                $(this).siblings('span.error.not-paired').removeClass('show');
+            }
         });
 
         $('a#citation-control-toggle-verified', this.controlElem).click(function(e) {

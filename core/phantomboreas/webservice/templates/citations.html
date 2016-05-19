@@ -34,9 +34,13 @@
                     <span class="label">Citation Search</span>
                     <form id="citation-app-search">
                         <label>Start Date &amp; Time
+                            <span class="error bad-input">Date &amp; Time Is Malformed</span>
+                            <span class="error not-paired">Required With The End Date &amp; Time</span>
                             <input type="datetime-local" name="start_datetime">
                         </label>
                         <label>End Date &amp; Time
+                            <span class="error bad-input">Date &amp; Time Is Malformed</span>
+                            <span class="error not-paired">Required With The Start Date &amp; Time</span>
                             <input type="datetime-local" name="end_datetime">
                         </label>
                         <label>License Plate
@@ -118,33 +122,13 @@
                                 </div>
                                 {{ /status.delegations }}
 
-                                {{ ^is_actionable }}
-                                <span class="citation-note">
-                                    This citation is not actionable because...
-                                    {{ #status.verified }}<br/>... it is already verified.{{ /status.verified }}
-                                    {{ #status.dismissed }}<br/>... it is already dismissed.{{ /status.dismissed }}
-                                    {{ #status.delegate_to }}<br/>... it delegates to another citation.{{ /status.delegate_to }}
-                                </span><br/>
-                                {{ /is_actionable }}
-
                                 {{ #is_actionable }}
-                                <a class="button action-verify">Verify Citation</a>
-                                <a class="button action-dismiss">Dismiss Citation</a>
-                                <br/>
+                                <a class="small button action-verify">Verify Citation</a>
+                                <a class="small button action-dismiss">Dismiss Citation</a>
                                 {{ /is_actionable }}
-
-                                {{ ^can_delegate_to }}
-                                <span class="citation-note">
-                                    This citation cannot delegate to another citation because...
-                                    {{ #status.verified }}<br/>... it is already verified.{{ /status.verified }}
-                                    {{ #status.dismissed }}<br/>... it is already dismissed.{{ /status.dismissed }}
-                                    {{ #status.delegate_to }}<br/>... it already delegates.{{ /status.delegate_to }}
-                                    {{ #has_delegations }}<br/>... it must serve as a delegate itself.{{ /has_delegations }}
-                                </span><br/>
-                                {{ /can_delegate_to }}
 
                                 {{ #can_delegate_to }}
-                                <a class="button" data-toggle="dropdown-delegate-form-citation-{{ citation_id }}">Delegate Citation</a>
+                                <a class="small button" data-toggle="dropdown-delegate-form-citation-{{ citation_id }}">Delegate Citation</a>
                                 <div class="dropdown-pane" id="dropdown-delegate-form-citation-{{ citation_id }}" data-dropdown data-hover="true" data-hover-pane="true">
                                     <div class="input-group">
                                         <span class="input-group-label">Citation #</span>
@@ -154,6 +138,25 @@
                                         </div>
                                     </div>
                                 </div>
+                                {{ /can_delegate_to }}
+
+                                {{ ^is_actionable }}
+                                <br/><span class="citation-note">
+                                    This citation is not actionable because...
+                                    {{ #status.verified }}<br/>... it is already verified.{{ /status.verified }}
+                                    {{ #status.dismissed }}<br/>... it is already dismissed.{{ /status.dismissed }}
+                                    {{ #status.delegate_to }}<br/>... it delegates to another citation.{{ /status.delegate_to }}
+                                </span>
+                                {{ /is_actionable }}
+
+                                {{ ^can_delegate_to }}
+                                <br/><span class="citation-note">
+                                    This citation cannot delegate to another citation because...
+                                    {{ #status.verified }}<br/>... it is already verified.{{ /status.verified }}
+                                    {{ #status.dismissed }}<br/>... it is already dismissed.{{ /status.dismissed }}
+                                    {{ #status.delegate_to }}<br/>... it already delegates.{{ /status.delegate_to }}
+                                    {{ #has_delegations }}<br/>... it must serve as a delegate itself.{{ /has_delegations }}
+                                </span>
                                 {{ /can_delegate_to }}
                             </div>
                         </div>

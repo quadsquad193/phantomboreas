@@ -111,10 +111,12 @@ def api_search_citation():
     start_datetime      = datetime_option(request.args.get('start_datetime', None))
     end_datetime        = datetime_option(request.args.get('end_datetime', None))
     license_plate       = upperstring_option(request.args.get('license_plate', None))
-    print(license_plate)
 
     if not len(filter(lambda x: x is not None, [start_datetime, end_datetime, license_plate])):
         return jsonify({'success': False, 'message': 'No search parameters found.'}), 400
+
+    if ((start_datetime is None and end_datetime is not None) or (start_datetime is not None and end_datetime is None)):
+        return jsonify({'success': False, 'message': 'There must be a pair of dates & times or none.'}), 400
 
     q = session.query(CitationLog).\
         join(CitationLog.plate).\
@@ -131,7 +133,7 @@ def api_search_citation():
     citations = q.all()
 
     citations_repr = [citation_log_dump(c) for c in citations]
-    print(citations_repr)
+
     return jsonify({'citations': citations_repr}), 200
 
 def bool_option(val):

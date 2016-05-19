@@ -143,6 +143,21 @@ form#citation-app-search label {
     color: white;
 }
 
+form#citation-app-search span.error {
+    color: red;
+    font-size: 0.66em;
+
+    display: none;
+}
+
+form#citation-app-search span.error.show {
+    display: block;
+}
+
+form#citation-app-search input[type=datetime-local].bad-input, form#citation-app-search input[type=datetime-local].not-paired {
+    border: 2px solid red;
+}
+
 ul#citation-app-controls a.button {
     margin-top: 0.25em;
 }
