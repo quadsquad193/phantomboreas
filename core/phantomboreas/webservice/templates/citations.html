@@ -18,8 +18,8 @@
     {% from "partials/navbar.html" import navbar %}
     {{ navbar(admin=current_user.is_admin, logged_in=True) }}
 
-    <div id="main" class="set-viewport-max-width no-overflow-y row">
-        <div id="sidebar" class="column small-4 set-viewport-height scroll-y">
+    <div id="main" class="set-citation-max-width no-overflow-y row">
+        <div id="sidebar" class="column small-4 set-citation-height scroll-y">
             <div class="row sidemap">
                 <div class="column small-12">
                     <div id="citation-app-map">
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <div id="rightside" class="column small-8 set-viewport-height scroll-y">
+        <div id="rightside" class="column small-8 set-citation-height scroll-y">
             <div id="citation-app-container" class="hide-evidence">
 
             </div>
@@ -91,21 +91,24 @@
                                 {{ #status.verified }}
                                 <div class="small callout success">
                                     <span class="status">This citation has been verified.</span>
-                                    <a class="button tiny secondary revoke revoke-verify">Revoke Verification</a>
+                                    <br/>
+                                    <a class="revoke revoke-verify">(Undo)</a>
                                 </div>
                                 {{ /status.verified }}
 
                                 {{ #status.dismissed }}
                                 <div class="small callout alert">
                                     <span class="status">This citation has been dismissed.</span>
-                                    <a class="button tiny secondary revoke revoke-dismiss">Revoke Dismissal</a>
+                                    <br/>
+                                    <a class="revoke revoke-dismiss">(Undo)</a>
                                 </div>
                                 {{ /status.dismissed }}
 
                                 {{ #status.delegate_to }}
                                 <div class="small callout warning">
                                     <span>This citation delegates to <a href="#{{ . }}">Citation &#35;{{ . }}</a>.</span>
-                                    <a class="button tiny secondary revoke revoke-delegate-to">Remove Delegationn</a>
+                                    <br/>
+                                    <a class="revoke revoke-delegate-to">(Undo)</a>
                                 </div>
                                 {{ /status.delegate_to }}
 
@@ -127,6 +130,7 @@
                                 {{ #is_actionable }}
                                 <a class="button action-verify">Verify Citation</a>
                                 <a class="button action-dismiss">Dismiss Citation</a>
+                                <br/>
                                 {{ /is_actionable }}
 
                                 {{ ^can_delegate_to }}

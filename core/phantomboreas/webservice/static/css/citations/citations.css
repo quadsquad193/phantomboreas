@@ -43,13 +43,12 @@ div.scroll-y {
     overflow-y: scroll;
 }
 
-div.set-viewport-max-width {
-    height: 100vh;
+div.set-citation-max-width {
     max-width: 100vw;
 }
 
-div.set-viewport-height {
-    height: 100vh;
+div.set-citation-height {
+    height: 100%;
 }
 
 div.info {
@@ -141,11 +140,6 @@ form#citation-app-search label {
 
 ul#citation-app-controls a.button {
     margin-top: 0.25em;
-}
-
-a.button.revoke {
-    float: right;
-    margin-top: -0.5em;
 }
 
 div.small.callout {

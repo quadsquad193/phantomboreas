@@ -79,13 +79,13 @@ Citations = (function() {
         $('.button.action-delegate-to:first', this.elem).bind('click', {self: this}, function(event) {
             if (to = $('input.delegate-to:first', event.data.self.elem).val()) service.putCitation(event.data.self.id, 'delegate_to', to);
         });
-        $('.button.revoke-verify:first', this.elem).bind('click', {self: this}, function(event) {
+        $('.revoke-verify:first', this.elem).bind('click', {self: this}, function(event) {
             service.putCitation(event.data.self.id, 'verify', false);
         });
-        $('.button.revoke-dismiss:first', this.elem).bind('click', {self: this}, function(event) {
+        $('.revoke-dismiss:first', this.elem).bind('click', {self: this}, function(event) {
             service.putCitation(event.data.self.id, 'dismiss', false);
         });
-        $('.button.revoke-delegate-to:first', this.elem).bind('click', {self: this}, function(event) {
+        $('.revoke-delegate-to:first', this.elem).bind('click', {self: this}, function(event) {
             service.putCitation(event.data.self.id, 'delegate_to', 0);
         });
         $('.button.map-coords', this.elem).bind('click', {self: this}, function(event) {
