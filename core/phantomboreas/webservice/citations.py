@@ -125,8 +125,7 @@ def api_search_citation():
             filter(CaptureLog.timestamp.between(start_datetime, end_datetime))
 
     if license_plate is not None:
-        q = q.from_self().\
-            join(CandidateLog.plate).\
+        q = q.join(PlateLog.candidates).\
             filter(CandidateLog.license_plate == license_plate)
 
     citations = q.all()

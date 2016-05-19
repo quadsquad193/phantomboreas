@@ -6,32 +6,32 @@ from phantomboreas.droneservice import process, db_session
 
 
 class DroneImagesAPI(MethodView):
-	def post(self):
-		key = request.cookies.get("key")
+    def post(self):
+        key = request.cookies.get("key")
 
-		if DroneAuth.verify_auth_token(key) != None:
-			process.process(request)
+        if DroneAuth.verify_auth_token(key) != None:
+            process.process(request)
 
-			# Return HTTP 204 No Content
-			return '', 204
-		else:
-			return '', 401
+            # Return HTTP 204 No Content
+            return '', 204
+        else:
+            return '', 401
 
 
 class AuthenticateDroneAPI(MethodView):
-	def post(self):
-		key = request.headers.get("authorization")
-		print(key)
-		session = db_session()
+    def post(self):
+        key = request.headers.get("authorization")
+        print(key)
+        session = db_session()
 
-		drone_auth = session.query(DroneAuth).filter_by(key=key).first()
+        drone_auth = session.query(DroneAuth).filter_by(key=key).first()
 
-		if drone_auth != None:
-			session_token = drone_auth.generate_auth_token()
+        if drone_auth != None:
+            session_token = drone_auth.generate_auth_token()
 
-			response = make_response('')  
-			response.set_cookie('key',value=session_token)
+            response = make_response('')
+            response.set_cookie('key',value=session_token)
 
-			return response, 204
+            return response, 204
 
-		return '', 401
+        return '', 401

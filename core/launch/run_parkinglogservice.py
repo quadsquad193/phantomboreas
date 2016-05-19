@@ -24,7 +24,7 @@ assets_conf = {
 }
 
 rules_conf = {
-    'timedelta_limit':  datetime.timedelta(seconds=2),# Should be 2 hours
+    'timedelta_limit':  datetime.timedelta(hours=2),
     'timedelta_hot':    datetime.timedelta(minutes=15),
     'time_start':       datetime.time(hour=8),
     'time_end':         datetime.time(hour=12+6),
