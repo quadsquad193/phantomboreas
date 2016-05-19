@@ -1,6 +1,6 @@
 from phantomboreas.webservice import app, bcrypt, admin_required
 
-from flask import request
+from flask import request, session as user_session
 from flask.views import MethodView
 from flask import render_template
 
@@ -61,21 +61,42 @@ class UserLogoutView(MethodView):
 
 class SigninView(MethodView):
     def get(self):
-        signin_form = UsernamePasswordForm()
+        signin_form   = UsernamePasswordForm()
         register_form = RegisterForm()
+
+        if 'signin_form_errors' in user_session:
+            signin_form.username.errors = user_session['signin_form_errors']['username']
+            signin_form.password.errors = user_session['signin_form_errors']['password']
+
+        if 'register_form_errors' in user_session:
+            register_form.username.errors = user_session['register_form_errors']['username']
+            register_form.password.errors = user_session['register_form_errors']['password']
+            register_form.confirm.errors  = user_session['register_form_errors']['confirm']    
 
         return render_template('signin.html', signin_form=signin_form, register_form=register_form)
 
     def post(self):
         session = db_session()
+
         form = UsernamePasswordForm()
 
         user = session.query(User).filter_by(username=form.username.data).first()
-        if form.validate() and bcrypt.check_password_hash(user.password, form.password.data):
+
+        if form.validate() and user is not None and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
 
             return redirect(url_for('index'))
         else:
+            if user is None:
+                form.username.errors.append('Invalid username')
+            elif not bcrypt.check_password_hash(user.password, form.password.data):
+                form.password.errors.append('Incorrect password')
+
+            user_session['signin_form_errors'] = {
+                'username': form.username.errors,
+                'password': form.password.errors
+            }
+            
             return redirect(url_for('signin'))
 
 

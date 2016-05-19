@@ -48,9 +48,9 @@
                         {% endif %}
                         {{ field(class_='form-control', **kwargs) }}
                         {% if field.errors %}
-                            {% for e in field.errors %}
-                                <p class="help-block">{{ e }}</p>
-                            {% endfor %}
+                            <div class="help-block with-errors">
+                                {{ field.errors[0] }}
+                            </div>
                         {% endif %}
                     </div>
                 {%- endmacro %}

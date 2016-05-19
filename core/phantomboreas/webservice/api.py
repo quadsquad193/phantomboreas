@@ -2,7 +2,7 @@ from flask import request, send_from_directory, make_response, redirect, url_for
 from flask.views import MethodView
 
 from flask import jsonify
-from flask import request
+from flask import request, session as user_session
 from flask.ext.login import login_user, logout_user
 
 import datetime
@@ -46,9 +46,14 @@ class RegisterAPI(MethodView):
 	def post(self):
 		session     = db_session()
 		form        = RegisterForm()
-		signin_form = UsernamePasswordForm()
 
 		if form.validate():
+			user_session['register_form_errors'] = {
+				'username': form.username.errors,
+				'password': form.password.errors,
+				'confirm' : form.confirm.errors
+			}
+
 			user = User(username=form.username.data, password=bcrypt.generate_password_hash(form.password.data), is_admin=False)
 			session.add(user)
 			session.commit()
