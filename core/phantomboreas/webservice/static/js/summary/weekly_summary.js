@@ -8,8 +8,6 @@ WeeklySummary = (function(){
 
 		this.initializeLabels();
 		this.formatData();
-
-		console.log(this);
 	}
 
 	WeeklySummary.prototype.initializeLabels = function() {
@@ -41,8 +39,8 @@ WeeklySummary = (function(){
 
 		nv.addGraph(function() {
 		  var chart = nv.models.discreteBarChart()
-		      .x(function(d) { console.log(d); return d.label; })
-		      .y(function(d) { console.log(d); return d.count; });
+		      .x(function(d) { return d.label; })
+		      .y(function(d) { return d.count; });
 
 		  d3.select(self.selector + ' #weekly-summary')
 		  	.attr('height', '100%')
@@ -68,7 +66,6 @@ WeeklyAveragesSummary = (function(){
 
 		this.formatData();
 
-		console.log(this);
 	}
 
 	WeeklyAveragesSummary.prototype.formatData = function() {
@@ -87,7 +84,7 @@ WeeklyAveragesSummary = (function(){
 		});
 
 		var weeks_elapsed = Utils.time.weeks_elapsed(this.raw_data.citations.map(function(d){ return d.evidence[0].timestamp; }));
-		console.log(weeks_elapsed);
+
 		self.data[0].values.forEach(function(d) {
 			d.average /= weeks_elapsed;
 		});
@@ -100,8 +97,8 @@ WeeklyAveragesSummary = (function(){
 
 		nv.addGraph(function() {
 		  var chart = nv.models.discreteBarChart()
-		      .x(function(d) { console.log(d); return d.label; })
-		      .y(function(d) { console.log(d); return d.average; });
+		      .x(function(d) { return d.label; })
+		      .y(function(d) { return d.average; });
 
 		  d3.select(self.selector + ' #weekly-averages-summary')
 		  	.attr('height', '100%')

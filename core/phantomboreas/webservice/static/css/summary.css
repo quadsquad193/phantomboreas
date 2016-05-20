@@ -1,0 +1,37 @@
+.counter {
+    overflow: hidden;
+    font-family: Helvetica Neue, Helvetica, Arial, Verdana, sans-serif;
+    font-size: 40px;
+}
+.number {
+    box-shadow: 0 0 3px 0 rgba(0,0,0,.2);
+    padding: 3px 7px;
+    margin: 3px;
+    border-radius: 3px;
+    background: #ffffff;
+    background: -moz-linear-gradient(top,  #ffffff 0%, #f3f3f3 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f3f3f3));
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#f3f3f3 100%);
+    background: -o-linear-gradient(top,  #ffffff 0%,#f3f3f3 100%);
+    background: -ms-linear-gradient(top,  #ffffff 0%,#f3f3f3 100%);
+    background: linear-gradient(to bottom,  #ffffff 0%,#f3f3f3 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f3f3f3',GradientType=0 );
+    text-shadow: 0 1px  white;
+}
+
+.comma {
+    margin: 3px;
+    color: rgba(255,255,255,.7);
+}
+
+.counter-wrapper {
+    margin-top: 50%;
+    display: inline-block;
+    padding: 10px;
+    background-color: #222;
+    border-radius: 8px;
+}
+
+.counter-wrapper h2 {
+    color: rgba(255,255,255,.7);
+}

@@ -27,6 +27,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/css/creative.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/summary.css" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -81,10 +82,22 @@
     <section id="citation-summary">
         <div class="container-fluid">
         	<div class="row">
-		        <div id="map-tile-container" class="col-lg-6 col-lg-offset-3" style="padding: 30px">
+                <div id="day-citation-counter-container" class="col-lg-3 text-center" style="padding: 30px">
+                    <div class="counter-wrapper">
+                        <h2 class="text-center" id="day-citation-header">Citations Today</h2>
+                        <div id="day-citation-counter" class="text-center"></div>
+                    </div>
+                </div>
+		        <div id="map-tile-container" class="col-lg-6" style="padding: 30px">
 		        	<h2 class="text-center">Locations of Citations This Week</h2>
 		        	<div id="map-tile"></div>
 		        </div>
+                <div id="total-citation-counter-container" class="col-lg-3 text-center" style="padding: 30px">
+                    <div class="counter-wrapper">
+                        <h2 class="text-center" id="total-citation-header">Total Citations</h2>
+                        <div id="total-citation-counter" class="text-center"></div>
+                    </div>
+                </div>
 		    </div>
 		    <div class="row">
 		        <div id="citations-by-week-container" class="col-lg-6" style="padding: 30px">
@@ -123,6 +136,7 @@
     <script src="../static/js/summary/mapbox_api.js"></script>
     <script src="../static/js/summary/weekly_summary.js"></script>
     <script src="../static/js/summary/citation_map.js"></script>
+    <script src="../static/js/summary/counter.js"></script>
     <script src="../static/js/summary/summary.js"></script>
 </body>
 </html>

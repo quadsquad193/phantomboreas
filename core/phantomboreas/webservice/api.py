@@ -48,12 +48,6 @@ class RegisterAPI(MethodView):
 		form        = RegisterForm()
 
 		if form.validate():
-			user_session['register_form_errors'] = {
-				'username': form.username.errors,
-				'password': form.password.errors,
-				'confirm' : form.confirm.errors
-			}
-
 			user = User(username=form.username.data, password=bcrypt.generate_password_hash(form.password.data), is_admin=False)
 			session.add(user)
 			session.commit()
@@ -61,6 +55,12 @@ class RegisterAPI(MethodView):
 			login_user(user)
 
 			return redirect(url_for('index'))
+		else:
+			user_session['register_form_errors'] = {
+				'username': form.username.errors,
+				'password': form.password.errors,
+				'confirm' : form.confirm.errors
+			}
 
 		return redirect(url_for('signin'))
 

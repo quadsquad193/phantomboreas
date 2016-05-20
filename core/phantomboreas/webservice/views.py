@@ -67,11 +67,14 @@ class SigninView(MethodView):
         if 'signin_form_errors' in user_session:
             signin_form.username.errors = user_session['signin_form_errors']['username']
             signin_form.password.errors = user_session['signin_form_errors']['password']
+            del user_session['signin_form_errors']
 
         if 'register_form_errors' in user_session:
             register_form.username.errors = user_session['register_form_errors']['username']
             register_form.password.errors = user_session['register_form_errors']['password']
-            register_form.confirm.errors  = user_session['register_form_errors']['confirm']    
+            register_form.confirm.errors  = user_session['register_form_errors']['confirm']
+            del user_session['register_form_errors']
+
 
         return render_template('signin.html', signin_form=signin_form, register_form=register_form)
 
@@ -96,7 +99,7 @@ class SigninView(MethodView):
                 'username': form.username.errors,
                 'password': form.password.errors
             }
-            
+
             return redirect(url_for('signin'))
 
 

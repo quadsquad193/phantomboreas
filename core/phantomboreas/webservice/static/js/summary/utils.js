@@ -54,11 +54,16 @@ Utils = (function() {
         return weekday[date.getDay()];
     }
 
+    var date_is_today = function(timestamp) {
+        var date = new Date(timestamp * 1000),
+            date_now = new Date();
+
+        return date.toDateString() == date_now.toDateString();
+    }
+
     var weeks_elapsed = function(timestamps) {
         var minTime = Math.min.apply(null, timestamps), 
             maxTime = Math.max.apply(null, timestamps);
-
-        console.log(timestamps, maxTime, minTime);
 
         return Math.ceil((maxTime - minTime) / (60*60*24*7));
     }
@@ -70,7 +75,8 @@ Utils = (function() {
             human_date: human_date,
             date_x_days_from_y: date_x_days_from_y,
             day_of_week: day_of_week,
-            weeks_elapsed: weeks_elapsed
+            weeks_elapsed: weeks_elapsed,
+            date_is_today: date_is_today
         }
     };
 })();
