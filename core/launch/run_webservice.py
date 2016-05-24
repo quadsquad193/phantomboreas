@@ -1,4 +1,5 @@
 from phantomboreas import webservice
+import config
 
 
 

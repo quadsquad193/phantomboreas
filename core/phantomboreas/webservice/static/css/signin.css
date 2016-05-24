@@ -1,0 +1,11 @@
+div.custom-error-block {
+	border-radius: 4px;
+    background-color: #f44336;
+}
+
+div.error-help-message {
+	display: block;
+	color: white;
+	margin-bottom: 5px;
+    color: white;
+}

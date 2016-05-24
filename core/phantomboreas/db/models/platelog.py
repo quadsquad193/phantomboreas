@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from base import Base
+from citationlog import CitationLog, evidence_table
 
 
 
@@ -24,3 +25,5 @@ class PlateLog(Base):
     capture_id = Column(Integer, ForeignKey('capture_log.id'))
     capture = relationship("CaptureLog", back_populates="plates")
     candidates = relationship("CandidateLog", back_populates="plate")
+
+    citation = relationship("CitationLog", uselist=False, back_populates="plate")

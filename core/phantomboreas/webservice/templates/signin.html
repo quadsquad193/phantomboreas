@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Based off of the Bootstrap Creative Template">
+    <meta name="author" content="Mark Machado">
+
+    <title>Drone Parking Enforcement</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../static/font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="../static/css/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/creative.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/signin.css" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+    {% from "partials/navbar.html" import navbar %}
+    {{ navbar(logged_in=False) }}
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                {% macro render_field(field, label_visible=true) -%}
+                     <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}">
+                        {% if field.type != 'HiddenField' and label_visible %}
+                            <label for="{{ field.id }}" class="control-label">{{ field.label }}</label>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="custom-error-block">
+                                {{ field(class_='form-control', **kwargs) }}
+                                <div class="error-help-message">
+                                    {{ field.errors[0] }}
+                                </div>
+                            </div>
+                        {% else %}
+                            {{ field(class_='form-control', **kwargs) }}
+                        {% endif %}
+                    </div>
+                {%- endmacro %}
+
+                {% macro render_form(form, action_url='', action_text='Submit', class_='', btn_class='btn btn-default') -%}
+                 
+                    <form method="POST" action="{{ action_url }}" role="form" class="{{ class_ }}">
+                        {{ form.hidden_tag() if form.hidden_tag }}
+                        {% if caller %}
+                            {{ caller() }}
+                        {% else %}
+                            {% for f in form %}
+                                {% if f.type == 'BooleanField' %}
+                                    {{ render_checkbox_field(f) }}
+                                {% elif f.type == 'RadioField' %}
+                                    {{ render_radio_field(f) }}
+                                {% else %}
+                                    {{ render_field(f) }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <button type="submit" class="{{ btn_class }}" style="background-color: #f05f40; width: 100%">{{ action_text }} </button>
+                    </form>
+                {%- endmacro %}
+
+                <div class="col-lg-4 col-lg-offset-4">
+                    <div id="login-container">
+                        <h2 class="login-message text-faded" style="font-weight: 700;">
+                            Login
+                        </h2>
+                        {% call render_form(form=signin_form, action_url=url_for('signin'), action_text='Login',
+                                                    class_='login-form') %}
+                            {{ render_field(signin_form.username, label_visible=false, placeholder='Username', type='text') }}
+                            {{ render_field(signin_form.password, label_visible=false, placeholder='Password', type='password') }}
+                        {% endcall %}
+                        Not registered? <a id="account-register" href="#">Create an account</a>
+                    </div>
+                    <div id="register-container" style="display: none">
+                        <h2 class="register-message text-faded" style="font-weight: 700;">
+                            Register
+                        </h2>
+                        {% call render_form(form=register_form, action_url=url_for('register'), action_text='Register',
+                                                    class_='register-form') %}
+                            {{ render_field(register_form.username, label_visible=false, placeholder='Username', type='text') }}
+                            {{ render_field(register_form.password, label_visible=false, placeholder='Password', type='password') }}
+                            {{ render_field(register_form.confirm, label_visible=false, placeholder='Verify Password', type='password') }}
+                        {% endcall %}
+                        <a id="account-login" href="#">Back to login</a>      
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="more-details">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">More Details</h2>
+                    <hr class="primary">
+                    <p>The goal of this project is create a semi-automated system for enforcing parking limits.  We use the <a href="http://www.dji.com/product/phantom-3-adv">DJI Phantom 3 Advanced</a> quadcopter to capture images of car license plates and use <a href="http://www.openalpr.com/">OpenALPR</a> to do the image processing.</p>
+                </div>
+                <div class="col-lg-4 text-center"></div>
+                <div class="col-lg-4 text-center">
+                    <i class="fa fa-external-link fa-3x wow bounceIn" data-wow-delay=".1s"></i>
+                    <p><a href="https://quadcopterucd.wordpress.com/" target="_blank">Project Blog</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- jQuery -->
+    <script src="../static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="../static/js/jquery.easing.min.js"></script>
+    <script src="../static/js/jquery.fittext.js"></script>
+    <script src="../static/js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/js/creative.js"></script>
+
+    <!-- Template Specific Javascript -->
+    <script src="../static/js/signin/signin.js"></script>
+</body>
+
+</html>
