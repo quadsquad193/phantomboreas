@@ -1,1 +1,2 @@
-include ':app', ':DJI-SDK-LIB'
+include ':app'
+include ':DJI-SDK-LIB'
