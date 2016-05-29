@@ -33,6 +33,7 @@ public class TabActivity extends AppCompatActivity {
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
 /*        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
 
