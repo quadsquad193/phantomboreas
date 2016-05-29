@@ -4,7 +4,7 @@ Setting up `phantomboreas` is fairly straightforward.
 
 To start, we must satisfy some dependencies outside of the Python project. Be sure to
 - ... install [OpenALPR with Python bindings](./setup-openalpr-python-ubuntu.md)
-- ... install [Redis](./setup-openalpr-python-ubuntu.md) or have a Redis server ready
+- ... install [Redis](./setup-redis-python.md) or have a Redis server ready
 
 Next, clone the GitHub repository and navigate to the `backend` directory.
 

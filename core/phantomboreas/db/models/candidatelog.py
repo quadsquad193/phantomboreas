@@ -10,8 +10,7 @@ class CandidateLog(Base):
 
     id = Column(Integer, primary_key=True)
 
-    license_plate   = Column(String)
-    verified        = Column(Boolean, default=False)
+    license_plate   = Column(String(32))
     confidence      = Column(Float)
 
     plate_id = Column(Integer, ForeignKey('plate_log.id'))

@@ -1,0 +1,4 @@
+mapbox_api = {
+    id: '',
+    accessToken: '',
+}

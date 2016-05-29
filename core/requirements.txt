@@ -3,4 +3,10 @@ pytest-runner
 pytest-dbfixtures
 flask
 flask-sqlalchemy
+MySQL-python
 redis
+Flask-WTF
+flask-bcrypt
+flask-login
+flask-security
+itsdangerous

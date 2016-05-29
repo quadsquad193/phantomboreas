@@ -1,0 +1,39 @@
+{% macro navbar(admin=False, logged_in=True) -%}
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll">Drone Parking Enforcement</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                	{% if logged_in %}
+	                	<li>
+	                		<a href="/">Home</a>
+	                	</li>
+	                    <li>
+	                        <a href="/summary">Summary</a>
+	                    </li>
+	                    <li>
+	                        <a href="/citations">Citations</a>
+	                    </li>
+	                    {% if admin %}
+	                        <li>
+	                            <a href="/admin">Admin</a>
+	                        </li>
+	                    {% endif %}
+	                    <li>
+	                        <a href="/signout">Sign Out</a>
+	                    </li>
+	                {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{%- endmacro %}
