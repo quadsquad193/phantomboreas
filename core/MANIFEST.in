@@ -1,0 +1,2 @@
+recursive-include phantomboreas/webservice/templates *
+recursive-include phantomboreas/webservice/static *
