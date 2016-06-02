@@ -1,6 +1,4 @@
-package com.shronas.parkingpatrol;
-
-import java.util.ArrayList;
+package com.quadsquad193.parkingpatrol;
 
 /**
  * Created by Shronas on 4/9/16.

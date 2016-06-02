@@ -1,4 +1,4 @@
-package com.shronas.parkingpatrol;
+package com.quadsquad193.parkingpatrol;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;

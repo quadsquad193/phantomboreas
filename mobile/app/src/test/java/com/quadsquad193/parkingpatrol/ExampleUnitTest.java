@@ -1,4 +1,4 @@
-package com.shronas.parkingpatrol;
+package com.quadsquad193.parkingpatrol;
 
 import org.junit.Test;
 

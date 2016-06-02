@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.shronas.parkingpatrol">
+    package="com.quadsquad193.parkingpatrol">
 
     <!-- DJI SDK -->
     <!-- DJI SDK need permission -->
@@ -28,7 +28,7 @@
         android:required="true" />
     <!-- DJI SDK -->
     <application
-        android:name=".ParkingPatrolApplication"
+        android:name="com.quadsquad193.parkingpatrol.ParkingPatrolApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -55,7 +55,7 @@
         </activity>
 
         <activity
-            android:name=".TabActivity"
+            android:name="com.quadsquad193.parkingpatrol.TabActivity"
             android:label="@string/app_name"
             android:theme="@style/AppBaseTheme"
             android:screenOrientation="portrait"

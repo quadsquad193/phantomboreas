@@ -1,20 +1,11 @@
-package com.shronas.parkingpatrol;
+package com.quadsquad193.parkingpatrol;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
-import dji.sdk.Camera.DJICamera;
 import dji.sdk.FlightController.DJIFlightController;
 import dji.sdk.Products.DJIAircraft;
-import dji.sdk.SDKManager.DJISDKManager;
 import dji.sdk.base.DJIBaseProduct;
 
 /**

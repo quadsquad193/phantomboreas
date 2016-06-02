@@ -1,7 +1,6 @@
-package com.shronas.parkingpatrol;
+package com.quadsquad193.parkingpatrol;
 
 import android.app.Activity;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;

@@ -1,4 +1,4 @@
-package com.shronas.parkingpatrol;
+package com.quadsquad193.parkingpatrol;
 
 /**
  * Created by Shronas on 11/23/15.

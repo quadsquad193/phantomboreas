@@ -1,4 +1,4 @@
-package com.shronas.parkingpatrol;
+package com.quadsquad193.parkingpatrol;
 
 import android.content.Context;
 import android.content.SharedPreferences;

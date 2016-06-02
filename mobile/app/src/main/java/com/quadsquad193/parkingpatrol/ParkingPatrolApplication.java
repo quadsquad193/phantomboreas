@@ -1,10 +1,9 @@
-package com.shronas.parkingpatrol;
+package com.quadsquad193.parkingpatrol;
 
 import android.app.Application;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 import dji.sdk.SDKManager.DJISDKManager;
 import dji.sdk.base.DJIBaseComponent;
@@ -23,7 +22,7 @@ public class ParkingPatrolApplication extends Application {
 
     //private static final String TAG = ParkingPatrolApplication.class.getName();
 
-    public static final String FLAG_CONNECTION_CHANGE = "com_shronas_parkingpatrol_connection_change";
+    public static final String FLAG_CONNECTION_CHANGE = R.string.package_name + "_connection_change";
 
     private static DJIBaseProduct mProduct;
 
