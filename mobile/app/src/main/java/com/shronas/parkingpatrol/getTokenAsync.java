@@ -106,25 +106,21 @@ public class getTokenAsync extends AsyncTask<Void, Void, String> {
 
     /* Setup HTTPUrlConnection */
     private void requestToken() throws IOException {
-        //URL url = new URL("http://taglab3.genomecenter.ucdavis.edu/hri/api/active/");
         URL url = new URL(context.getString(R.string.get_token_url));
-        //URL url = new URL("http://requestb.in/12482fb1");
         urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setDoInput(true); // Allow Inputs
         urlConnection.setDoOutput(true); // Allow Outputs
         urlConnection.setUseCaches(false); // Don't use a Cached Copy
         urlConnection.setRequestMethod("POST");
         urlConnection.setRequestProperty("Connection", "Keep-Alive");
-
-        String userCredentials = username + ":";
-        //String basicAuth = "Basic " + new String(new Base64().encode(userCredentials.getBytes()));
-        //urlConnection.setRequestProperty ("Authorization", basicAuth);
-        urlConnection.setRequestProperty("Authorization", userCredentials);
-        urlConnection.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
         urlConnection.setRequestProperty("Content-Language", "en-US");
-        urlConnection.connect();
+        urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
+        String content =  "authorization=" + username;
+        urlConnection.setRequestProperty("Content-Length", Integer.toString(content.getBytes().length));
+        urlConnection.connect();
         dos = new DataOutputStream(urlConnection.getOutputStream());
+        dos.write(content.getBytes());
     } // setupConnection
 
 
@@ -166,7 +162,7 @@ public class getTokenAsync extends AsyncTask<Void, Void, String> {
 
             String token_unparsed = urlConnection.getHeaderField("set-cookie");
 
-            if (!token_unparsed.isEmpty()) {
+            if ( (token_unparsed != null) && !token_unparsed.isEmpty()) {
                 String cookie_name_value_pair = token_unparsed.split(";")[0];
                 token = cookie_name_value_pair.trim();
                 Log.d(TAG, token);

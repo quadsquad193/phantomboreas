@@ -12,8 +12,8 @@
     <string name="capture_dir">/Parking_Enforcement/DJI_Plate_Captures/</string>
     <string name="token_dir">/Parking_Enforcement/config/</string>
     <string name="token_filename">auth.txt</string>
-    <string name="get_token_url">http://10.42.0.1:8000/authenticate_drone</string>
-    <string name="upload_pic_url">http://10.42.0.1:8000/droneimages</string>
+    <string name="get_token_url">http://taglabrouter.genomecenter.ucdavis.edu/droneservice/authenticate_drone</string>
+    <string name="upload_pic_url">http://taglabrouter.genomecenter.ucdavis.edu/droneservice/droneimages</string>
 
     <string name="title_activity_djigallery">Gallery</string>
 </resources>
