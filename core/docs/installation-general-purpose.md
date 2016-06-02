@@ -9,7 +9,7 @@ To start, we must satisfy some dependencies outside of the Python project. Be su
 Next, clone the GitHub repository and navigate to the `backend` directory.
 
 ```
-git clone https://github.com/quadsquad193/Quadcopter
+git clone https://github.com/quadsquad193/phantomboreas
 cd backend
 ```
 
